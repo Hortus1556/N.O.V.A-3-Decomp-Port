@@ -1,0 +1,34 @@
+# Game files and everything derived from them (Gameloft's): never published
+*.apk
+*.obb
+game/
+com.gameloft.android.ANMP.GloftNAHM/
+build/
+dist/
+dist.7z
+dist.zip
+hd_textures/
+dumps/
+userdata/
+
+# Local run output, settings and tool state
+nova3.ini
+*.log
+NVIDIA Corporation/
+.stagista/
+.claude/
+__pycache__/
+*.pyc
+
+# Console keys and signed titles stay on the player's machine
+*.keys
+*.nsp
+*.cia
+*.3dsx
+*.nro
+*.dol
+*.iso
+*.gcm
+
+# Debug symbols of the SDL package (rebuildable, 14 MB)
+extern/sdl/lib/x64/SDL3.pdb

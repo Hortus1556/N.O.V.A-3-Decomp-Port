@@ -1,0 +1,91 @@
+{
+  "updated": "2026-10-13",
+  "ports": [
+    {
+      "id": "windows",
+      "name": "Windows x64",
+      "branch": "port/windows",
+      "doc": "docs/app-and-settings.md",
+      "summary": "Playable: campaign and local Wi-Fi matches, 240 fps, launcher; HD textures in progress.",
+      "milestones": [
+        {"name": "ELF / OBB reverse engineering, ARM to C recompiler", "state": "done", "date": "2026-10-07"},
+        {"name": "Every instruction incl. Thumb, differential tests against Unicorn", "state": "done", "date": "2026-10-07"},
+        {"name": "Runtime: libc, pthreads, heap, setjmp, C++ exceptions", "state": "done", "date": "2026-10-07"},
+        {"name": "Fake JNI / Java, Android lifecycle, GLES2 on ANGLE", "state": "done", "date": "2026-10-07"},
+        {"name": "Audio (Vox AudioTrack on SDL3)", "state": "done", "date": "2026-10-07"},
+        {"name": "Launcher, nova3.ini, display modes, VSync, FOV, Saved Games", "state": "done", "date": "2026-10-07"},
+        {"name": "Keyboard / mouse and gamepad controls, menus without touch", "state": "done", "date": "2026-10-08"},
+        {"name": "Campaign playable: loading, tutorials, QTEs, slow motion, section loads", "state": "done", "date": "2026-10-08"},
+        {"name": "Offline game: store, ads, social, logins removed", "state": "done", "date": "2026-10-08"},
+        {"name": "Local Wi-Fi multiplayer (LAN / ZeroTier peers)", "state": "done", "date": "2026-10-08"},
+        {"name": "HD texture pack: upscaled textures swapped in at upload (work in progress)", "state": "partial", "date": "2026-10-08"},
+        {"name": "Performance pass (flow analysis, inlining, native hot paths, PGO)", "state": "done", "date": "2026-10-10"},
+        {"name": "Linux build (tested once, Ubuntu 24.04 in WSL)", "state": "partial", "date": "2026-10-07"},
+        {"name": "Physical gamepad, grenade / melee keys, uncapped fps tested", "state": "todo"},
+        {"name": "Translated functions replaced with readable C++", "state": "partial"}
+      ]
+    },
+    {
+      "id": "switch",
+      "name": "Nintendo Switch",
+      "branch": "port/switch",
+      "doc": "docs/switch.md",
+      "summary": "Homebrew .nsp / .nro: whole campaign and local matches in emulators, 52-56 fps on hardware.",
+      "milestones": [
+        {"name": "devkitPro build: os_switch.cpp, SDL2, Mesa GLES2", "state": "done", "date": "2026-10-09"},
+        {"name": "Installable .nsp (hacBrewPack, RomFS game files)", "state": "done", "date": "2026-10-09"},
+        {"name": "Campaign's ten chapters played through in Ryujinx / Citron", "state": "done", "date": "2026-10-09"},
+        {"name": "Seven multiplayer maps hosted locally", "state": "done", "date": "2026-10-09"},
+        {"name": "Runs on a real console (players' logs)", "state": "done", "date": "2026-10-09"},
+        {"name": "Physics-thread race and thread-stack leak fixed", "state": "done", "date": "2026-10-09"},
+        {"name": "Gyro, rumble, Switch button layout and names", "state": "done", "date": "2026-10-09"},
+        {"name": "Loading: read cache, CPU boost, shader prewarm", "state": "done", "date": "2026-10-09"},
+        {"name": "Steady 60 fps on hardware (52-56 before the last pass)", "state": "partial", "date": "2026-10-10"},
+        {"name": "libnx controller, touchscreen and keyboard paths verified", "state": "partial"},
+        {"name": "Local multiplayer between two consoles", "state": "todo"},
+        {"name": "Latest build (offline cleanup, section-load fixes) played", "state": "todo"}
+      ]
+    },
+    {
+      "id": "3ds",
+      "name": "New Nintendo 3DS",
+      "branch": "port/3ds",
+      "doc": "docs/3ds.md",
+      "summary": "The game's own ARM code runs natively; boots and plays on a New 3DS at about 26 fps.",
+      "milestones": [
+        {"name": "ARMv6K patch set (v6patch.py: 143,859 sites)", "state": "done", "date": "2026-10-10"},
+        {"name": "Native so-loader, assembly gates, 137 hooks", "state": "done", "date": "2026-10-10"},
+        {"name": "PICA200 GL backend over citro3d", "state": "done", "date": "2026-10-10"},
+        {"name": "Boot to the title menu in Azahar", "state": "done", "date": "2026-10-10"},
+        {"name": "Campaign chapters at or near 30 fps in Azahar", "state": "done", "date": "2026-10-10"},
+        {"name": "Slim data and packed archives: loads 4x faster", "state": "done", "date": "2026-10-10"},
+        {"name": "Menus on the bottom screen with touch", "state": "done", "date": "2026-10-10"},
+        {"name": "Runs on a real New 3DS (SD card image)", "state": "done", "date": "2026-10-12"},
+        {"name": "24-30 fps on the console, no dips below 24", "state": "partial", "date": "2026-10-12"},
+        {"name": "Depth-fighting, HOME Menu and sound fixes checked on the console", "state": "partial"},
+        {"name": "No pause when changing weapons", "state": "todo"},
+        {"name": "Local multiplayer between consoles", "state": "todo"}
+      ]
+    },
+    {
+      "id": "gamecube",
+      "name": "Nintendo GameCube",
+      "branch": "port/gamecube",
+      "doc": "docs/gamecube.md",
+      "summary": "24 MB and one core: demand paging to ARAM and disc; the title menu runs in Dolphin.",
+      "milestones": [
+        {"name": "Toolchain and Dolphin test harness (devkitPPC, libogc2)", "state": "done", "date": "2026-10-12"},
+        {"name": "Pager: page table, DSI / ISI handlers, ARAM with compression", "state": "done", "date": "2026-10-12"},
+        {"name": "Big-endian runtime", "state": "done", "date": "2026-10-12"},
+        {"name": "Translated code for the Gekko, paged code file", "state": "done", "date": "2026-10-12"},
+        {"name": "Disc image tool and DVD file layer", "state": "done", "date": "2026-10-12"},
+        {"name": "Boots into the title menu in Dolphin", "state": "done", "date": "2026-10-12"},
+        {"name": "GX backend: every material", "state": "partial", "date": "2026-10-12"},
+        {"name": "Platform: controller, audio, video modes", "state": "partial", "date": "2026-10-12"},
+        {"name": "A campaign level in Dolphin", "state": "todo"},
+        {"name": "First console test (Swiss, SD card build)", "state": "todo"},
+        {"name": "Disc tier of the pager, measurement and optimisation", "state": "todo"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 268" width="1000" height="268" font-family="-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" role="img" aria-label="Milestones of every port">
+<rect width="1000" height="268" rx="8" fill="#0d1117"/>
+<text x="16" y="28" font-size="17" font-weight="600" fill="#e6edf3">Milestones: 33 of 50 done, 9 in progress</text>
+<text x="16" y="62" font-size="14" font-weight="600" fill="#e6edf3">Windows x64</text>
+<text x="218" y="62" font-size="13" fill="#8b949e" text-anchor="end">11/15</text>
+<rect x="16" y="70" width="202" height="6" rx="3" fill="#21262d"/>
+<rect x="16" y="70" width="188.5" height="6" rx="3" fill="#d29922"/>
+<rect x="16" y="70" width="148.1" height="6" rx="3" fill="#2ea043"/>
+<g><title>Windows x64 #1: ELF / OBB reverse engineering, ARM to C recompiler (Done)</title><rect x="230.0" y="46" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="253.1" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">1</text></g>
+<g><title>Windows x64 #2: Every instruction incl. Thumb, differential tests against Unicorn (Done)</title><rect x="280.3" y="46" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="303.4" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">2</text></g>
+<g><title>Windows x64 #3: Runtime: libc, pthreads, heap, setjmp, C++ exceptions (Done)</title><rect x="330.5" y="46" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="353.7" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">3</text></g>
+<g><title>Windows x64 #4: Fake JNI / Java, Android lifecycle, GLES2 on ANGLE (Done)</title><rect x="380.8" y="46" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="403.9" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">4</text></g>
+<g><title>Windows x64 #5: Audio (Vox AudioTrack on SDL3) (Done)</title><rect x="431.1" y="46" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="454.2" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">5</text></g>
+<g><title>Windows x64 #6: Launcher, nova3.ini, display modes, VSync, FOV, Saved Games (Done)</title><rect x="481.3" y="46" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="504.5" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">6</text></g>
+<g><title>Windows x64 #7: Keyboard / mouse and gamepad controls, menus without touch (Done)</title><rect x="531.6" y="46" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="554.7" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">7</text></g>
+<g><title>Windows x64 #8: Campaign playable: loading, tutorials, QTEs, slow motion, section loads (Done)</title><rect x="581.9" y="46" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="605.0" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">8</text></g>
+<g><title>Windows x64 #9: Offline game: store, ads, social, logins removed (Done)</title><rect x="632.1" y="46" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="655.3" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">9</text></g>
+<g><title>Windows x64 #10: Local Wi-Fi multiplayer (LAN / ZeroTier peers) (Done)</title><rect x="682.4" y="46" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="705.5" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">10</text></g>
+<g><title>Windows x64 #11: HD texture pack: upscaled textures swapped in at upload (work in progress) (In progress)</title><rect x="732.7" y="46" width="46.3" height="36" rx="5" fill="#d29922" stroke="#30363d"/><text x="755.8" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">11</text></g>
+<g><title>Windows x64 #12: Performance pass (flow analysis, inlining, native hot paths, PGO) (Done)</title><rect x="782.9" y="46" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="806.1" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">12</text></g>
+<g><title>Windows x64 #13: Linux build (tested once, Ubuntu 24.04 in WSL) (In progress)</title><rect x="833.2" y="46" width="46.3" height="36" rx="5" fill="#d29922" stroke="#30363d"/><text x="856.3" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">13</text></g>
+<g><title>Windows x64 #14: Physical gamepad, grenade / melee keys, uncapped fps tested (To do)</title><rect x="883.5" y="46" width="46.3" height="36" rx="5" fill="#21262d" stroke="#30363d"/><text x="906.6" y="69.0" font-size="12" fill="#8b949e" text-anchor="middle">14</text></g>
+<g><title>Windows x64 #15: Translated functions replaced with readable C++ (In progress)</title><rect x="933.7" y="46" width="46.3" height="36" rx="5" fill="#d29922" stroke="#30363d"/><text x="956.9" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">15</text></g>
+<text x="16" y="108" font-size="14" font-weight="600" fill="#e6edf3">Nintendo Switch</text>
+<text x="218" y="108" font-size="13" fill="#8b949e" text-anchor="end">8/12</text>
+<rect x="16" y="116" width="202" height="6" rx="3" fill="#21262d"/>
+<rect x="16" y="116" width="168.3" height="6" rx="3" fill="#d29922"/>
+<rect x="16" y="116" width="134.7" height="6" rx="3" fill="#2ea043"/>
+<g><title>Nintendo Switch #1: devkitPro build: os_switch.cpp, SDL2, Mesa GLES2 (Done)</title><rect x="230.0" y="92" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="253.1" y="115.0" font-size="12" fill="#e6edf3" text-anchor="middle">1</text></g>
+<g><title>Nintendo Switch #2: Installable .nsp (hacBrewPack, RomFS game files) (Done)</title><rect x="280.3" y="92" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="303.4" y="115.0" font-size="12" fill="#e6edf3" text-anchor="middle">2</text></g>
+<g><title>Nintendo Switch #3: Campaign&#x27;s ten chapters played through in Ryujinx / Citron (Done)</title><rect x="330.5" y="92" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="353.7" y="115.0" font-size="12" fill="#e6edf3" text-anchor="middle">3</text></g>
+<g><title>Nintendo Switch #4: Seven multiplayer maps hosted locally (Done)</title><rect x="380.8" y="92" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="403.9" y="115.0" font-size="12" fill="#e6edf3" text-anchor="middle">4</text></g>
+<g><title>Nintendo Switch #5: Runs on a real console (players&#x27; logs) (Done)</title><rect x="431.1" y="92" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="454.2" y="115.0" font-size="12" fill="#e6edf3" text-anchor="middle">5</text></g>
+<g><title>Nintendo Switch #6: Physics-thread race and thread-stack leak fixed (Done)</title><rect x="481.3" y="92" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="504.5" y="115.0" font-size="12" fill="#e6edf3" text-anchor="middle">6</text></g>
+<g><title>Nintendo Switch #7: Gyro, rumble, Switch button layout and names (Done)</title><rect x="531.6" y="92" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="554.7" y="115.0" font-size="12" fill="#e6edf3" text-anchor="middle">7</text></g>
+<g><title>Nintendo Switch #8: Loading: read cache, CPU boost, shader prewarm (Done)</title><rect x="581.9" y="92" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="605.0" y="115.0" font-size="12" fill="#e6edf3" text-anchor="middle">8</text></g>
+<g><title>Nintendo Switch #9: Steady 60 fps on hardware (52-56 before the last pass) (In progress)</title><rect x="632.1" y="92" width="46.3" height="36" rx="5" fill="#d29922" stroke="#30363d"/><text x="655.3" y="115.0" font-size="12" fill="#e6edf3" text-anchor="middle">9</text></g>
+<g><title>Nintendo Switch #10: libnx controller, touchscreen and keyboard paths verified (In progress)</title><rect x="682.4" y="92" width="46.3" height="36" rx="5" fill="#d29922" stroke="#30363d"/><text x="705.5" y="115.0" font-size="12" fill="#e6edf3" text-anchor="middle">10</text></g>
+<g><title>Nintendo Switch #11: Local multiplayer between two consoles (To do)</title><rect x="732.7" y="92" width="46.3" height="36" rx="5" fill="#21262d" stroke="#30363d"/><text x="755.8" y="115.0" font-size="12" fill="#8b949e" text-anchor="middle">11</text></g>
+<g><title>Nintendo Switch #12: Latest build (offline cleanup, section-load fixes) played (To do)</title><rect x="782.9" y="92" width="46.3" height="36" rx="5" fill="#21262d" stroke="#30363d"/><text x="806.1" y="115.0" font-size="12" fill="#8b949e" text-anchor="middle">12</text></g>
+<text x="16" y="154" font-size="14" font-weight="600" fill="#e6edf3">New Nintendo 3DS</text>
+<text x="218" y="154" font-size="13" fill="#8b949e" text-anchor="end">8/12</text>
+<rect x="16" y="162" width="202" height="6" rx="3" fill="#21262d"/>
+<rect x="16" y="162" width="168.3" height="6" rx="3" fill="#d29922"/>
+<rect x="16" y="162" width="134.7" height="6" rx="3" fill="#2ea043"/>
+<g><title>New Nintendo 3DS #1: ARMv6K patch set (v6patch.py: 143,859 sites) (Done)</title><rect x="230.0" y="138" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="253.1" y="161.0" font-size="12" fill="#e6edf3" text-anchor="middle">1</text></g>
+<g><title>New Nintendo 3DS #2: Native so-loader, assembly gates, 137 hooks (Done)</title><rect x="280.3" y="138" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="303.4" y="161.0" font-size="12" fill="#e6edf3" text-anchor="middle">2</text></g>
+<g><title>New Nintendo 3DS #3: PICA200 GL backend over citro3d (Done)</title><rect x="330.5" y="138" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="353.7" y="161.0" font-size="12" fill="#e6edf3" text-anchor="middle">3</text></g>
+<g><title>New Nintendo 3DS #4: Boot to the title menu in Azahar (Done)</title><rect x="380.8" y="138" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="403.9" y="161.0" font-size="12" fill="#e6edf3" text-anchor="middle">4</text></g>
+<g><title>New Nintendo 3DS #5: Campaign chapters at or near 30 fps in Azahar (Done)</title><rect x="431.1" y="138" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="454.2" y="161.0" font-size="12" fill="#e6edf3" text-anchor="middle">5</text></g>
+<g><title>New Nintendo 3DS #6: Slim data and packed archives: loads 4x faster (Done)</title><rect x="481.3" y="138" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="504.5" y="161.0" font-size="12" fill="#e6edf3" text-anchor="middle">6</text></g>
+<g><title>New Nintendo 3DS #7: Menus on the bottom screen with touch (Done)</title><rect x="531.6" y="138" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="554.7" y="161.0" font-size="12" fill="#e6edf3" text-anchor="middle">7</text></g>
+<g><title>New Nintendo 3DS #8: Runs on a real New 3DS (SD card image) (Done)</title><rect x="581.9" y="138" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="605.0" y="161.0" font-size="12" fill="#e6edf3" text-anchor="middle">8</text></g>
+<g><title>New Nintendo 3DS #9: 24-30 fps on the console, no dips below 24 (In progress)</title><rect x="632.1" y="138" width="46.3" height="36" rx="5" fill="#d29922" stroke="#30363d"/><text x="655.3" y="161.0" font-size="12" fill="#e6edf3" text-anchor="middle">9</text></g>
+<g><title>New Nintendo 3DS #10: Depth-fighting, HOME Menu and sound fixes checked on the console (In progress)</title><rect x="682.4" y="138" width="46.3" height="36" rx="5" fill="#d29922" stroke="#30363d"/><text x="705.5" y="161.0" font-size="12" fill="#e6edf3" text-anchor="middle">10</text></g>
+<g><title>New Nintendo 3DS #11: No pause when changing weapons (To do)</title><rect x="732.7" y="138" width="46.3" height="36" rx="5" fill="#21262d" stroke="#30363d"/><text x="755.8" y="161.0" font-size="12" fill="#8b949e" text-anchor="middle">11</text></g>
+<g><title>New Nintendo 3DS #12: Local multiplayer between consoles (To do)</title><rect x="782.9" y="138" width="46.3" height="36" rx="5" fill="#21262d" stroke="#30363d"/><text x="806.1" y="161.0" font-size="12" fill="#8b949e" text-anchor="middle">12</text></g>
+<text x="16" y="200" font-size="14" font-weight="600" fill="#e6edf3">Nintendo GameCube</text>
+<text x="218" y="200" font-size="13" fill="#8b949e" text-anchor="end">6/11</text>
+<rect x="16" y="208" width="202" height="6" rx="3" fill="#21262d"/>
+<rect x="16" y="208" width="146.9" height="6" rx="3" fill="#d29922"/>
+<rect x="16" y="208" width="110.2" height="6" rx="3" fill="#2ea043"/>
+<g><title>Nintendo GameCube #1: Toolchain and Dolphin test harness (devkitPPC, libogc2) (Done)</title><rect x="230.0" y="184" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="253.1" y="207.0" font-size="12" fill="#e6edf3" text-anchor="middle">1</text></g>
+<g><title>Nintendo GameCube #2: Pager: page table, DSI / ISI handlers, ARAM with compression (Done)</title><rect x="280.3" y="184" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="303.4" y="207.0" font-size="12" fill="#e6edf3" text-anchor="middle">2</text></g>
+<g><title>Nintendo GameCube #3: Big-endian runtime (Done)</title><rect x="330.5" y="184" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="353.7" y="207.0" font-size="12" fill="#e6edf3" text-anchor="middle">3</text></g>
+<g><title>Nintendo GameCube #4: Translated code for the Gekko, paged code file (Done)</title><rect x="380.8" y="184" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="403.9" y="207.0" font-size="12" fill="#e6edf3" text-anchor="middle">4</text></g>
+<g><title>Nintendo GameCube #5: Disc image tool and DVD file layer (Done)</title><rect x="431.1" y="184" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="454.2" y="207.0" font-size="12" fill="#e6edf3" text-anchor="middle">5</text></g>
+<g><title>Nintendo GameCube #6: Boots into the title menu in Dolphin (Done)</title><rect x="481.3" y="184" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="504.5" y="207.0" font-size="12" fill="#e6edf3" text-anchor="middle">6</text></g>
+<g><title>Nintendo GameCube #7: GX backend: every material (In progress)</title><rect x="531.6" y="184" width="46.3" height="36" rx="5" fill="#d29922" stroke="#30363d"/><text x="554.7" y="207.0" font-size="12" fill="#e6edf3" text-anchor="middle">7</text></g>
+<g><title>Nintendo GameCube #8: Platform: controller, audio, video modes (In progress)</title><rect x="581.9" y="184" width="46.3" height="36" rx="5" fill="#d29922" stroke="#30363d"/><text x="605.0" y="207.0" font-size="12" fill="#e6edf3" text-anchor="middle">8</text></g>
+<g><title>Nintendo GameCube #9: A campaign level in Dolphin (To do)</title><rect x="632.1" y="184" width="46.3" height="36" rx="5" fill="#21262d" stroke="#30363d"/><text x="655.3" y="207.0" font-size="12" fill="#8b949e" text-anchor="middle">9</text></g>
+<g><title>Nintendo GameCube #10: First console test (Swiss, SD card build) (To do)</title><rect x="682.4" y="184" width="46.3" height="36" rx="5" fill="#21262d" stroke="#30363d"/><text x="705.5" y="207.0" font-size="12" fill="#8b949e" text-anchor="middle">10</text></g>
+<g><title>Nintendo GameCube #11: Disc tier of the pager, measurement and optimisation (To do)</title><rect x="732.7" y="184" width="46.3" height="36" rx="5" fill="#21262d" stroke="#30363d"/><text x="755.8" y="207.0" font-size="12" fill="#8b949e" text-anchor="middle">11</text></g>
+<rect x="16" y="241" width="12" height="12" rx="3" fill="#2ea043" stroke="#30363d"/>
+<text x="34" y="252" font-size="12" fill="#8b949e">Done</text>
+<rect x="74.8" y="241" width="12" height="12" rx="3" fill="#d29922" stroke="#30363d"/>
+<text x="92.8" y="252" font-size="12" fill="#8b949e">In progress</text>
+<rect x="184.0" y="241" width="12" height="12" rx="3" fill="#21262d" stroke="#30363d"/>
+<text x="202.0" y="252" font-size="12" fill="#8b949e">To do</text>
+<text x="984" y="252" font-size="12" fill="#8b949e" text-anchor="end">Numbers match the tables in the README</text>
+</svg>

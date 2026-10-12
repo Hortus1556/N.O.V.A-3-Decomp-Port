@@ -1,0 +1,120 @@
+; The game's unlit materials (runtime/gles_pica.cpp): position, up to three texture
+; coordinates made from the three UV sets, and the vertex colour.
+;
+; The GL matrices arrive with the PICA's clip depth range and the top screen's rotation folded
+; in, and with the attribute formats' normalisation folded into their columns, so a short or byte
+; attribute needs no conversion here. Each texture coordinate is
+;   tc0 = tc0a * uv0 + tc0b * uv1, tc1 likewise, tc2 = tc2a * uv0 + tc2b * uv2
+; (2x4 matrices: scale, offset, the PICA's t flip, NPOT padding)
+; and the colour is  color * cmul + cadd  (cmul = 1/255 for bytes, or 0 and cadd a constant).
+;
+; With `fogzon` (FOGZ: height fog), both of the game's fog factors per vertex for the combiners
+; (the PICA's fog unit holds one fog and mixes after the combiners; the game mixes the height fog
+; last):
+;   f  = clamp((d - start) * scale, 0, max)                                d: view distance (FOG)
+;   fz = (1 - min(clamp((world z - z0) * zinv, 0, D), zcam)) * clamp(d * dinv, 0, D) * (1 + amul (a - 1))
+; zcam is the camera's clamped term (from ViewInverse, on the CPU). They replace the colour's
+; green and blue (fogzk.z = 1: materials that use only its red and alpha), or are added to texture
+; coordinate 1 to be read back through a ramp texture on unit 1 (fogzk.w = 1: its red and green
+; are the coordinates, texel centres 1/16 .. 15/16).
+;
+; Every output register is written whole, once, at the end (texture coordinates: z, w = 0, 1):
+; the console's GPU freezes when a configured output component is not written exactly once
+; (3dbrew GPU/Pitfalls); Azahar draws anyway. tools/3ds_shadercheck.py checks the binary.
+
+.entry generic
+.fvec mvp[4]
+.fvec tc0a[2], tc0b[2], tc1a[2], tc1b[2], tc2a[2], tc2b[2]
+.fvec cmul, cadd
+.fvec vz, wz
+.fvec fog, fogz, fogzk
+.bool fogzon
+.constf k(0.0, 1.0, 0.0625, 0.875)
+
+.out opos position
+.out oclr color
+.out otc0 texcoord0
+.out otc1 texcoord1
+.out otc2 texcoord2
+
+.alias ipos v0
+.alias iuv0 v1
+.alias iuv1 v2
+.alias iclr v3
+.alias iuv2 v4
+
+.proc generic
+	dp4 opos.x, mvp[0], ipos
+	dp4 opos.y, mvp[1], ipos
+	dp4 opos.z, mvp[2], ipos
+	dp4 opos.w, mvp[3], ipos
+
+	dp4 r0.x, tc0a[0], iuv0
+	dp4 r0.y, tc0a[1], iuv0
+	dp4 r1.x, tc0b[0], iuv1
+	dp4 r1.y, tc0b[1], iuv1
+	add r12.xy, r0.xy, r1.xy
+
+	dp4 r0.x, tc1a[0], iuv0
+	dp4 r0.y, tc1a[1], iuv0
+	dp4 r1.x, tc1b[0], iuv1
+	dp4 r1.y, tc1b[1], iuv1
+	add r8.xy, r0.xy, r1.xy
+
+	dp4 r0.x, tc2a[0], iuv0
+	dp4 r0.y, tc2a[1], iuv0
+	dp4 r1.x, tc2b[0], iuv2
+	dp4 r1.y, tc2b[1], iuv2
+	add r13.xy, r0.xy, r1.xy
+
+	mov r2, iclr
+	mul r2, cmul, r2
+	add r2, cadd, r2
+
+	ifu fogzon
+		; r3.x = view distance (the view's z is negative in front)
+		dp4 r3.x, vz, ipos
+		mov r3.x, -r3.xxxx
+		; distance fog
+		add r4.x, -fog.xxxx, r3.xxxx
+		mul r4.x, fog.yyyy, r4.xxxx
+		max r4.x, k.xxxx, r4.xxxx
+		min r4.x, fog.zzzz, r4.xxxx
+		; height fog: r5.x = 1 - min(clamped height term, zcam)
+		dp4 r5.x, wz, ipos
+		add r5.x, -fogz.xxxx, r5.xxxx
+		mul r5.x, fogz.yyyy, r5.xxxx
+		max r5.x, k.xxxx, r5.xxxx
+		min r5.x, fogzk.xxxx, r5.xxxx
+		min r5.x, fogz.wwww, r5.xxxx
+		add r5.x, k.yyyy, -r5.xxxx
+		; x clamp(d * dinv, 0, D)
+		mul r6.x, fogz.zzzz, r3.xxxx
+		max r6.x, k.xxxx, r6.xxxx
+		min r6.x, fogzk.xxxx, r6.xxxx
+		mul r5.x, r5.xxxx, r6.xxxx
+		; x (1 + amul (a - 1))
+		add r7.x, -k.yyyy, r2.wwww
+		mul r7.x, fogzk.yyyy, r7.xxxx
+		add r7.x, k.yyyy, r7.xxxx
+		mul r5.x, r5.xxxx, r7.xxxx
+		; r4.xy = (f, fz): into the colour's green and blue, or texture coordinate 1
+		mov r4.y, r5.xxxx
+		add r9.xy, -r2.yzzz, r4.xyyy
+		mul r9.xy, fogzk.zzzz, r9.xyyy
+		add r2.yz, r2.xyzw, r9.xxyy
+		mul r10.xy, k.wwww, r4.xyyy
+		add r10.xy, k.zzzz, r10.xyyy
+		mul r10.xy, fogzk.wwww, r10.xyyy
+		add r8.xy, r8.xyyy, r10.xyyy
+	.end
+
+	mov r12.zw, k.xxxy
+	mov r8.zw, k.xxxy
+	mov r13.zw, k.xxxy
+	mov otc0, r12
+	mov otc1, r8
+	mov otc2, r13
+	mov oclr, r2
+	end
+.end

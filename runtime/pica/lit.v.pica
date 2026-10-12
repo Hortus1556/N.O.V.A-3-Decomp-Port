@@ -1,0 +1,98 @@
+; Characters and weapons (runtime/gles_pica.cpp, the irradiance material): the game's
+; NV_NormalRim / NV_DiffuseSpec low shaders light each vertex with second-order spherical
+; harmonics (ird_c*) on the world normal plus one point light in object space:
+;   color.rgb = 2 * (cA . n1 + cB . n1.xyzz*n1.yzzx + cC * (n.x^2 - n.y^2)), n1 = (n, 1)
+;   color.a   = vertex alpha
+;   color    += Light0diffusecolormultiplied * clamp(L . N) * max(0, 1 - |L| * att)
+; The rgb goes out halved (up to 2 survives the PICA's clamp to 1; the combiners double it).
+; Inputs: v0 position, v1 uv0, v2 normal, v3 colour. All three texture coordinates come from uv0.
+; Every output register is written whole, once (texture coordinates: z, w = 0, 1): see generic.v.pica.
+
+.entry lit
+.fvec mvp[4]
+.fvec tc0a[2], tc1a[2], tc2a[2]
+.fvec nrm[3]
+.fvec cAr, cAg, cAb, cBr, cBg, cBb, cC
+.fvec lpos, latt, lcol
+.fvec cmul, scales
+.constf k(0.0, 1.0, 2.0, 0.5)
+
+.out opos position
+.out oclr color
+.out otc0 texcoord0
+.out otc1 texcoord1
+.out otc2 texcoord2
+
+.alias ipos v0
+.alias iuv0 v1
+.alias inrm v2
+.alias iclr v3
+
+.proc lit
+	dp4 opos.x, mvp[0], ipos
+	dp4 opos.y, mvp[1], ipos
+	dp4 opos.z, mvp[2], ipos
+	dp4 opos.w, mvp[3], ipos
+
+	dp4 r12.x, tc0a[0], iuv0
+	dp4 r12.y, tc0a[1], iuv0
+	dp4 r13.x, tc1a[0], iuv0
+	dp4 r13.y, tc1a[1], iuv0
+	dp4 r14.x, tc2a[0], iuv0
+	dp4 r14.y, tc2a[1], iuv0
+	mov r12.zw, k.xxxy
+	mov r13.zw, k.xxxy
+	mov r14.zw, k.xxxy
+	mov otc0, r12
+	mov otc1, r13
+	mov otc2, r14
+
+	; r0 = object normal (attribute normalisation), r1 = (world normal, 1)
+	mov r0, inrm
+	mul r0, scales.xxxx, r0
+	dp3 r1.x, nrm[0], r0
+	dp3 r1.y, nrm[1], r0
+	dp3 r1.z, nrm[2], r0
+	mov r1.w, k.yyyy
+
+	; r2 = first order, r4 = second order, r5.x = x^2 - y^2
+	dp4 r2.x, cAr, r1
+	dp4 r2.y, cAg, r1
+	dp4 r2.z, cAb, r1
+	mul r3, r1.xyzz, r1.yzzx
+	dp4 r4.x, cBr, r3
+	dp4 r4.y, cBg, r3
+	dp4 r4.z, cBb, r3
+	add r2.xyz, r2.xyz, r4.xyz
+	mul r5.xy, r1.xy, r1.xy
+	add r5.x, r5.xxxx, -r5.yyyy
+	mul r6.xyz, cC.xyz, r5.xxxx
+	add r2.xyz, r2.xyz, r6.xyz
+	add r2.xyz, r2.xyz, r2.xyz
+
+	; vertex alpha
+	mov r7, iclr
+	mul r7, cmul, r7
+	mov r2.w, r7.wwww
+
+	; point light (object space): L = lpos - pos
+	mov r8, ipos
+	add r8.xyz, lpos.xyz, -r8.xyz
+	dp3 r9.x, r8.xyz, r8.xyz
+	rsq r9.y, r9.xxxx
+	rcp r9.z, r9.yyyy
+	mul r8.xyz, r8.xyz, r9.yyyy
+	dp3 r10.x, r8.xyz, r0.xyz
+	max r10.x, k.xxxx, r10.xxxx
+	min r10.x, k.yyyy, r10.xxxx
+	mul r9.w, latt.yyyy, r9.zzzz
+	add r9.w, k.yyyy, -r9.wwww
+	max r9.w, k.xxxx, r9.wwww
+	mul r10.x, r10.xxxx, r9.wwww
+	mul r11, lcol, r10.xxxx
+	; at half scale: the lighting exceeds 1 (the PICA clamps the colour), the combiners double it
+	add r2, r2, r11
+	mul r2.xyz, k.wwww, r2.xyz
+	mov oclr, r2
+	end
+.end

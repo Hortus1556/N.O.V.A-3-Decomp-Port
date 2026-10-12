@@ -1,0 +1,71 @@
+; Models lit by two point lights (runtime/gles_pica.cpp, TEV_GLOW: the first-person weapon in
+; some rooms, cinematic models). Per vertex, in world space:
+;   color.rgb = sat(N . L1) * l1col + sat(N . L2) * l2col + amb   (lNcol: colour x intensity)
+;   color.a   = vertex alpha
+; The rgb goes out halved (ambient 1 plus the lights exceeds 1, which the PICA clamps; the
+; combiners double it).
+; Inputs: v0 position, v1 uv0, v2 normal, v3 colour.
+; Every output register is written whole, once (texture coordinate: z, w = 0, 1): see generic.v.pica.
+
+.entry point2
+.fvec mvp[4]
+.fvec tc0a[2]
+.fvec world[3], nrm[3]
+.fvec l1pos, l2pos, l1col, l2col, amb
+.fvec cmul
+.constf k(0.0, 1.0, 0.5, 0.0)
+
+.out opos position
+.out oclr color
+.out otc0 texcoord0
+
+.alias ipos v0
+.alias iuv0 v1
+.alias inrm v2
+.alias iclr v3
+
+.proc point2
+	dp4 opos.x, mvp[0], ipos
+	dp4 opos.y, mvp[1], ipos
+	dp4 opos.z, mvp[2], ipos
+	dp4 opos.w, mvp[3], ipos
+
+	dp4 r12.x, tc0a[0], iuv0
+	dp4 r12.y, tc0a[1], iuv0
+	mov r12.zw, k.xxxy
+	mov otc0, r12
+
+	; r0 = world position, r1 = world normal
+	dp4 r0.x, world[0], ipos
+	dp4 r0.y, world[1], ipos
+	dp4 r0.z, world[2], ipos
+	mov r2, inrm
+	dp3 r1.x, nrm[0], r2
+	dp3 r1.y, nrm[1], r2
+	dp3 r1.z, nrm[2], r2
+
+	; light 1
+	add r3.xyz, l1pos.xyz, -r0.xyz
+	dp3 r4.x, r3.xyz, r3.xyz
+	rsq r4.x, r4.xxxx
+	mul r3.xyz, r3.xyz, r4.xxxx
+	dp3 r5.x, r1.xyz, r3.xyz
+	; light 2
+	add r3.xyz, l2pos.xyz, -r0.xyz
+	dp3 r4.x, r3.xyz, r3.xyz
+	rsq r4.x, r4.xxxx
+	mul r3.xyz, r3.xyz, r4.xxxx
+	dp3 r5.y, r1.xyz, r3.xyz
+	max r5.xy, k.xxxx, r5.xyyy
+	min r5.xy, k.yyyy, r5.xyyy
+
+	mov r6, amb
+	mad r6.xyz, r5.xxxx, l1col.xyz, r6.xyz
+	mad r6.xyz, r5.yyyy, l2col.xyz, r6.xyz
+	mov r7, iclr
+	mul r7, cmul, r7
+	mov r6.w, r7.wwww
+	mul r6.xyz, k.zzzz, r6.xyz
+	mov oclr, r6
+	end
+.end

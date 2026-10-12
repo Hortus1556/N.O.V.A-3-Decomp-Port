@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- UTF-8 as the process code page: the narrow file APIs (CRT _open/_stat64, fopen,
+     std::filesystem from std::string) then take the UTF-8 paths SDL returns, e.g. a
+     Saved Games folder under a user name with non-ASCII letters. -->
+<assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1">
+  <application xmlns="urn:schemas-microsoft-com:asm.v3">
+    <windowsSettings>
+      <activeCodePage xmlns="http://schemas.microsoft.com/SMI/2019/WindowsSettings">UTF-8</activeCodePage>
+    </windowsSettings>
+  </application>
+</assembly>
