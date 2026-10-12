@@ -1,81 +1,250 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 268" width="1000" height="268" font-family="-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" role="img" aria-label="Milestones of every port">
-<rect width="1000" height="268" rx="8" fill="#0d1117"/>
-<text x="16" y="28" font-size="17" font-weight="600" fill="#e6edf3">Milestones: 33 of 50 done, 9 in progress</text>
-<text x="16" y="62" font-size="14" font-weight="600" fill="#e6edf3">Windows x64</text>
-<text x="218" y="62" font-size="13" fill="#8b949e" text-anchor="end">11/15</text>
-<rect x="16" y="70" width="202" height="6" rx="3" fill="#21262d"/>
-<rect x="16" y="70" width="188.5" height="6" rx="3" fill="#d29922"/>
-<rect x="16" y="70" width="148.1" height="6" rx="3" fill="#2ea043"/>
-<g><title>Windows x64 #1: ELF / OBB reverse engineering, ARM to C recompiler (Done)</title><rect x="230.0" y="46" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="253.1" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">1</text></g>
-<g><title>Windows x64 #2: Every instruction incl. Thumb, differential tests against Unicorn (Done)</title><rect x="280.3" y="46" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="303.4" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">2</text></g>
-<g><title>Windows x64 #3: Runtime: libc, pthreads, heap, setjmp, C++ exceptions (Done)</title><rect x="330.5" y="46" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="353.7" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">3</text></g>
-<g><title>Windows x64 #4: Fake JNI / Java, Android lifecycle, GLES2 on ANGLE (Done)</title><rect x="380.8" y="46" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="403.9" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">4</text></g>
-<g><title>Windows x64 #5: Audio (Vox AudioTrack on SDL3) (Done)</title><rect x="431.1" y="46" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="454.2" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">5</text></g>
-<g><title>Windows x64 #6: Launcher, nova3.ini, display modes, VSync, FOV, Saved Games (Done)</title><rect x="481.3" y="46" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="504.5" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">6</text></g>
-<g><title>Windows x64 #7: Keyboard / mouse and gamepad controls, menus without touch (Done)</title><rect x="531.6" y="46" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="554.7" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">7</text></g>
-<g><title>Windows x64 #8: Campaign playable: loading, tutorials, QTEs, slow motion, section loads (Done)</title><rect x="581.9" y="46" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="605.0" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">8</text></g>
-<g><title>Windows x64 #9: Offline game: store, ads, social, logins removed (Done)</title><rect x="632.1" y="46" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="655.3" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">9</text></g>
-<g><title>Windows x64 #10: Local Wi-Fi multiplayer (LAN / ZeroTier peers) (Done)</title><rect x="682.4" y="46" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="705.5" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">10</text></g>
-<g><title>Windows x64 #11: HD texture pack: upscaled textures swapped in at upload (work in progress) (In progress)</title><rect x="732.7" y="46" width="46.3" height="36" rx="5" fill="#d29922" stroke="#30363d"/><text x="755.8" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">11</text></g>
-<g><title>Windows x64 #12: Performance pass (flow analysis, inlining, native hot paths, PGO) (Done)</title><rect x="782.9" y="46" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="806.1" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">12</text></g>
-<g><title>Windows x64 #13: Linux build (tested once, Ubuntu 24.04 in WSL) (In progress)</title><rect x="833.2" y="46" width="46.3" height="36" rx="5" fill="#d29922" stroke="#30363d"/><text x="856.3" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">13</text></g>
-<g><title>Windows x64 #14: Physical gamepad, grenade / melee keys, uncapped fps tested (To do)</title><rect x="883.5" y="46" width="46.3" height="36" rx="5" fill="#21262d" stroke="#30363d"/><text x="906.6" y="69.0" font-size="12" fill="#8b949e" text-anchor="middle">14</text></g>
-<g><title>Windows x64 #15: Translated functions replaced with readable C++ (In progress)</title><rect x="933.7" y="46" width="46.3" height="36" rx="5" fill="#d29922" stroke="#30363d"/><text x="956.9" y="69.0" font-size="12" fill="#e6edf3" text-anchor="middle">15</text></g>
-<text x="16" y="108" font-size="14" font-weight="600" fill="#e6edf3">Nintendo Switch</text>
-<text x="218" y="108" font-size="13" fill="#8b949e" text-anchor="end">8/12</text>
-<rect x="16" y="116" width="202" height="6" rx="3" fill="#21262d"/>
-<rect x="16" y="116" width="168.3" height="6" rx="3" fill="#d29922"/>
-<rect x="16" y="116" width="134.7" height="6" rx="3" fill="#2ea043"/>
-<g><title>Nintendo Switch #1: devkitPro build: os_switch.cpp, SDL2, Mesa GLES2 (Done)</title><rect x="230.0" y="92" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="253.1" y="115.0" font-size="12" fill="#e6edf3" text-anchor="middle">1</text></g>
-<g><title>Nintendo Switch #2: Installable .nsp (hacBrewPack, RomFS game files) (Done)</title><rect x="280.3" y="92" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="303.4" y="115.0" font-size="12" fill="#e6edf3" text-anchor="middle">2</text></g>
-<g><title>Nintendo Switch #3: Campaign&#x27;s ten chapters played through in Ryujinx / Citron (Done)</title><rect x="330.5" y="92" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="353.7" y="115.0" font-size="12" fill="#e6edf3" text-anchor="middle">3</text></g>
-<g><title>Nintendo Switch #4: Seven multiplayer maps hosted locally (Done)</title><rect x="380.8" y="92" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="403.9" y="115.0" font-size="12" fill="#e6edf3" text-anchor="middle">4</text></g>
-<g><title>Nintendo Switch #5: Runs on a real console (players&#x27; logs) (Done)</title><rect x="431.1" y="92" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="454.2" y="115.0" font-size="12" fill="#e6edf3" text-anchor="middle">5</text></g>
-<g><title>Nintendo Switch #6: Physics-thread race and thread-stack leak fixed (Done)</title><rect x="481.3" y="92" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="504.5" y="115.0" font-size="12" fill="#e6edf3" text-anchor="middle">6</text></g>
-<g><title>Nintendo Switch #7: Gyro, rumble, Switch button layout and names (Done)</title><rect x="531.6" y="92" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="554.7" y="115.0" font-size="12" fill="#e6edf3" text-anchor="middle">7</text></g>
-<g><title>Nintendo Switch #8: Loading: read cache, CPU boost, shader prewarm (Done)</title><rect x="581.9" y="92" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="605.0" y="115.0" font-size="12" fill="#e6edf3" text-anchor="middle">8</text></g>
-<g><title>Nintendo Switch #9: Steady 60 fps on hardware (52-56 before the last pass) (In progress)</title><rect x="632.1" y="92" width="46.3" height="36" rx="5" fill="#d29922" stroke="#30363d"/><text x="655.3" y="115.0" font-size="12" fill="#e6edf3" text-anchor="middle">9</text></g>
-<g><title>Nintendo Switch #10: libnx controller, touchscreen and keyboard paths verified (In progress)</title><rect x="682.4" y="92" width="46.3" height="36" rx="5" fill="#d29922" stroke="#30363d"/><text x="705.5" y="115.0" font-size="12" fill="#e6edf3" text-anchor="middle">10</text></g>
-<g><title>Nintendo Switch #11: Local multiplayer between two consoles (To do)</title><rect x="732.7" y="92" width="46.3" height="36" rx="5" fill="#21262d" stroke="#30363d"/><text x="755.8" y="115.0" font-size="12" fill="#8b949e" text-anchor="middle">11</text></g>
-<g><title>Nintendo Switch #12: Latest build (offline cleanup, section-load fixes) played (To do)</title><rect x="782.9" y="92" width="46.3" height="36" rx="5" fill="#21262d" stroke="#30363d"/><text x="806.1" y="115.0" font-size="12" fill="#8b949e" text-anchor="middle">12</text></g>
-<text x="16" y="154" font-size="14" font-weight="600" fill="#e6edf3">New Nintendo 3DS</text>
-<text x="218" y="154" font-size="13" fill="#8b949e" text-anchor="end">8/12</text>
-<rect x="16" y="162" width="202" height="6" rx="3" fill="#21262d"/>
-<rect x="16" y="162" width="168.3" height="6" rx="3" fill="#d29922"/>
-<rect x="16" y="162" width="134.7" height="6" rx="3" fill="#2ea043"/>
-<g><title>New Nintendo 3DS #1: ARMv6K patch set (v6patch.py: 143,859 sites) (Done)</title><rect x="230.0" y="138" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="253.1" y="161.0" font-size="12" fill="#e6edf3" text-anchor="middle">1</text></g>
-<g><title>New Nintendo 3DS #2: Native so-loader, assembly gates, 137 hooks (Done)</title><rect x="280.3" y="138" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="303.4" y="161.0" font-size="12" fill="#e6edf3" text-anchor="middle">2</text></g>
-<g><title>New Nintendo 3DS #3: PICA200 GL backend over citro3d (Done)</title><rect x="330.5" y="138" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="353.7" y="161.0" font-size="12" fill="#e6edf3" text-anchor="middle">3</text></g>
-<g><title>New Nintendo 3DS #4: Boot to the title menu in Azahar (Done)</title><rect x="380.8" y="138" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="403.9" y="161.0" font-size="12" fill="#e6edf3" text-anchor="middle">4</text></g>
-<g><title>New Nintendo 3DS #5: Campaign chapters at or near 30 fps in Azahar (Done)</title><rect x="431.1" y="138" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="454.2" y="161.0" font-size="12" fill="#e6edf3" text-anchor="middle">5</text></g>
-<g><title>New Nintendo 3DS #6: Slim data and packed archives: loads 4x faster (Done)</title><rect x="481.3" y="138" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="504.5" y="161.0" font-size="12" fill="#e6edf3" text-anchor="middle">6</text></g>
-<g><title>New Nintendo 3DS #7: Menus on the bottom screen with touch (Done)</title><rect x="531.6" y="138" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="554.7" y="161.0" font-size="12" fill="#e6edf3" text-anchor="middle">7</text></g>
-<g><title>New Nintendo 3DS #8: Runs on a real New 3DS (SD card image) (Done)</title><rect x="581.9" y="138" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="605.0" y="161.0" font-size="12" fill="#e6edf3" text-anchor="middle">8</text></g>
-<g><title>New Nintendo 3DS #9: 24-30 fps on the console, no dips below 24 (In progress)</title><rect x="632.1" y="138" width="46.3" height="36" rx="5" fill="#d29922" stroke="#30363d"/><text x="655.3" y="161.0" font-size="12" fill="#e6edf3" text-anchor="middle">9</text></g>
-<g><title>New Nintendo 3DS #10: Depth-fighting, HOME Menu and sound fixes checked on the console (In progress)</title><rect x="682.4" y="138" width="46.3" height="36" rx="5" fill="#d29922" stroke="#30363d"/><text x="705.5" y="161.0" font-size="12" fill="#e6edf3" text-anchor="middle">10</text></g>
-<g><title>New Nintendo 3DS #11: No pause when changing weapons (To do)</title><rect x="732.7" y="138" width="46.3" height="36" rx="5" fill="#21262d" stroke="#30363d"/><text x="755.8" y="161.0" font-size="12" fill="#8b949e" text-anchor="middle">11</text></g>
-<g><title>New Nintendo 3DS #12: Local multiplayer between consoles (To do)</title><rect x="782.9" y="138" width="46.3" height="36" rx="5" fill="#21262d" stroke="#30363d"/><text x="806.1" y="161.0" font-size="12" fill="#8b949e" text-anchor="middle">12</text></g>
-<text x="16" y="200" font-size="14" font-weight="600" fill="#e6edf3">Nintendo GameCube</text>
-<text x="218" y="200" font-size="13" fill="#8b949e" text-anchor="end">6/11</text>
-<rect x="16" y="208" width="202" height="6" rx="3" fill="#21262d"/>
-<rect x="16" y="208" width="146.9" height="6" rx="3" fill="#d29922"/>
-<rect x="16" y="208" width="110.2" height="6" rx="3" fill="#2ea043"/>
-<g><title>Nintendo GameCube #1: Toolchain and Dolphin test harness (devkitPPC, libogc2) (Done)</title><rect x="230.0" y="184" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="253.1" y="207.0" font-size="12" fill="#e6edf3" text-anchor="middle">1</text></g>
-<g><title>Nintendo GameCube #2: Pager: page table, DSI / ISI handlers, ARAM with compression (Done)</title><rect x="280.3" y="184" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="303.4" y="207.0" font-size="12" fill="#e6edf3" text-anchor="middle">2</text></g>
-<g><title>Nintendo GameCube #3: Big-endian runtime (Done)</title><rect x="330.5" y="184" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="353.7" y="207.0" font-size="12" fill="#e6edf3" text-anchor="middle">3</text></g>
-<g><title>Nintendo GameCube #4: Translated code for the Gekko, paged code file (Done)</title><rect x="380.8" y="184" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="403.9" y="207.0" font-size="12" fill="#e6edf3" text-anchor="middle">4</text></g>
-<g><title>Nintendo GameCube #5: Disc image tool and DVD file layer (Done)</title><rect x="431.1" y="184" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="454.2" y="207.0" font-size="12" fill="#e6edf3" text-anchor="middle">5</text></g>
-<g><title>Nintendo GameCube #6: Boots into the title menu in Dolphin (Done)</title><rect x="481.3" y="184" width="46.3" height="36" rx="5" fill="#2ea043" stroke="#30363d"/><text x="504.5" y="207.0" font-size="12" fill="#e6edf3" text-anchor="middle">6</text></g>
-<g><title>Nintendo GameCube #7: GX backend: every material (In progress)</title><rect x="531.6" y="184" width="46.3" height="36" rx="5" fill="#d29922" stroke="#30363d"/><text x="554.7" y="207.0" font-size="12" fill="#e6edf3" text-anchor="middle">7</text></g>
-<g><title>Nintendo GameCube #8: Platform: controller, audio, video modes (In progress)</title><rect x="581.9" y="184" width="46.3" height="36" rx="5" fill="#d29922" stroke="#30363d"/><text x="605.0" y="207.0" font-size="12" fill="#e6edf3" text-anchor="middle">8</text></g>
-<g><title>Nintendo GameCube #9: A campaign level in Dolphin (To do)</title><rect x="632.1" y="184" width="46.3" height="36" rx="5" fill="#21262d" stroke="#30363d"/><text x="655.3" y="207.0" font-size="12" fill="#8b949e" text-anchor="middle">9</text></g>
-<g><title>Nintendo GameCube #10: First console test (Swiss, SD card build) (To do)</title><rect x="682.4" y="184" width="46.3" height="36" rx="5" fill="#21262d" stroke="#30363d"/><text x="705.5" y="207.0" font-size="12" fill="#8b949e" text-anchor="middle">10</text></g>
-<g><title>Nintendo GameCube #11: Disc tier of the pager, measurement and optimisation (To do)</title><rect x="732.7" y="184" width="46.3" height="36" rx="5" fill="#21262d" stroke="#30363d"/><text x="755.8" y="207.0" font-size="12" fill="#8b949e" text-anchor="middle">11</text></g>
-<rect x="16" y="241" width="12" height="12" rx="3" fill="#2ea043" stroke="#30363d"/>
-<text x="34" y="252" font-size="12" fill="#8b949e">Done</text>
-<rect x="74.8" y="241" width="12" height="12" rx="3" fill="#d29922" stroke="#30363d"/>
-<text x="92.8" y="252" font-size="12" fill="#8b949e">In progress</text>
-<rect x="184.0" y="241" width="12" height="12" rx="3" fill="#21262d" stroke="#30363d"/>
-<text x="202.0" y="252" font-size="12" fill="#8b949e">To do</text>
-<text x="984" y="252" font-size="12" fill="#8b949e" text-anchor="end">Numbers match the tables in the README</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 628" width="1000" height="628" font-family="-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" role="img" aria-label="Status of every port">
+<rect width="1000" height="628" fill="#0d1117"/>
+<text x="4.00" y="21.00" font-size="16" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Windows x64: 77.6% (38/49)</text>
+<g><title>Game: 6/10</title>
+<rect x="1.00" y="30.00" width="45.37" height="49.07" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Game: Loading screens (Done)</title></rect>
+<rect x="46.37" y="30.00" width="45.37" height="49.07" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Game: Tutorials and QTEs (Done)</title></rect>
+<rect x="91.73" y="30.00" width="45.37" height="49.07" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Game: Slow motion at high frame rates (Done)</title></rect>
+<rect x="137.10" y="30.00" width="45.37" height="49.07" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Game: Cutscene skip (Done)</title></rect>
+<rect x="1.00" y="79.07" width="45.37" height="49.07" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Game: Jeep ride at high frame rates (Done)</title></rect>
+<rect x="46.37" y="79.07" width="45.37" height="49.07" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>Game: Section loads (other levels by replay only) (In progress)</title></rect>
+<rect x="91.73" y="79.07" width="45.37" height="49.07" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Game: Campaign&#x27;s ten chapters toured (Done)</title></rect>
+<rect x="137.10" y="79.07" width="45.37" height="49.07" fill="#6e7681" stroke="#0d1117" stroke-width="1"><title>Game: Move QTEs, jeep, mech, iron-sight tutorials (To do)</title></rect>
+<rect x="1.00" y="128.15" width="90.73" height="49.07" fill="#6e7681" stroke="#0d1117" stroke-width="1"><title>Game: End-of-match and end-of-mission screens (To do)</title></rect>
+<rect x="91.73" y="128.15" width="90.73" height="49.07" fill="#6e7681" stroke="#0d1117" stroke-width="1"><title>Game: Uncapped frame rates in play (To do)</title></rect>
+<rect x="1.00" y="30.00" width="181.47" height="147.22" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="6.00" y="46.00" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Game</text></g>
+<g><title>Code: 7/8</title>
+<rect x="1.00" y="177.22" width="45.37" height="58.89" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Code: ARM to C translation of every function (Done)</title></rect>
+<rect x="46.37" y="177.22" width="45.37" height="58.89" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Code: Thumb (Done)</title></rect>
+<rect x="91.73" y="177.22" width="45.37" height="58.89" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Code: Differential tests against Unicorn (Done)</title></rect>
+<rect x="137.10" y="177.22" width="45.37" height="58.89" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Code: Register and flag flow analysis (Done)</title></rect>
+<rect x="1.00" y="236.11" width="45.37" height="58.89" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Code: Inlined division helpers and imports (Done)</title></rect>
+<rect x="46.37" y="236.11" width="45.37" height="58.89" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Code: Native hot paths (Done)</title></rect>
+<rect x="91.73" y="236.11" width="45.37" height="58.89" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Code: Profile-guided optimisation (Done)</title></rect>
+<rect x="137.10" y="236.11" width="45.37" height="58.89" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>Code: Translated functions replaced with readable C++ (In progress)</title></rect>
+<rect x="1.00" y="177.22" width="181.47" height="117.78" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="6.00" y="193.22" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Code</text></g>
+<g><title>Runtime: 8/8</title>
+<rect x="182.47" y="30.00" width="47.05" height="50.48" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Runtime: ELF loader, relocations, import slots (Done)</title></rect>
+<rect x="229.52" y="30.00" width="47.05" height="50.48" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Runtime: Guest heap (Done)</title></rect>
+<rect x="276.56" y="30.00" width="47.05" height="50.48" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Runtime: pthreads, semaphores, errno (Done)</title></rect>
+<rect x="182.47" y="80.48" width="47.05" height="50.48" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Runtime: libc: strings, stdio, files, libm, time (Done)</title></rect>
+<rect x="229.52" y="80.48" width="47.05" height="50.48" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Runtime: setjmp / longjmp (Done)</title></rect>
+<rect x="276.56" y="80.48" width="47.05" height="50.48" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Runtime: C++ exceptions (Done)</title></rect>
+<rect x="182.47" y="130.95" width="70.57" height="50.48" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Runtime: Fake JNI and Java classes (Done)</title></rect>
+<rect x="253.04" y="130.95" width="70.57" height="50.48" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Runtime: Symbolized crash reports (Done)</title></rect>
+<rect x="182.47" y="30.00" width="141.14" height="151.43" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="187.47" y="46.00" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Runtime</text></g>
+<g><title>Input: 3/6</title>
+<rect x="182.47" y="181.43" width="47.05" height="56.79" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Input: Keyboard and mouse gameplay (Done)</title></rect>
+<rect x="229.52" y="181.43" width="47.05" height="56.79" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Input: Menus without touch (Done)</title></rect>
+<rect x="276.56" y="181.43" width="47.05" height="56.79" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Input: Gamepad mapping (Done)</title></rect>
+<rect x="182.47" y="238.21" width="47.05" height="56.79" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>Input: Rebinding (first control per device shown) (In progress)</title></rect>
+<rect x="229.52" y="238.21" width="47.05" height="56.79" fill="#6e7681" stroke="#0d1117" stroke-width="1"><title>Input: Physical gamepad tested (To do)</title></rect>
+<rect x="276.56" y="238.21" width="47.05" height="56.79" fill="#6e7681" stroke="#0d1117" stroke-width="1"><title>Input: Grenade, melee and interact keys tested (To do)</title></rect>
+<rect x="182.47" y="181.43" width="141.14" height="113.57" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="187.47" y="197.43" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Input</text></g>
+<g><title>App: 4/6</title>
+<rect x="323.61" y="30.00" width="57.13" height="46.76" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>App: Launcher (Done)</title></rect>
+<rect x="380.74" y="30.00" width="57.13" height="46.76" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>App: nova3.ini (Done)</title></rect>
+<rect x="437.87" y="30.00" width="57.13" height="46.76" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>App: Saves in Saved Games (Done)</title></rect>
+<rect x="323.61" y="76.76" width="57.13" height="46.76" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>App: Packaged copy (tools/package.py) (Done)</title></rect>
+<rect x="380.74" y="76.76" width="57.13" height="46.76" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>App: Migration on a real install (In progress)</title></rect>
+<rect x="437.87" y="76.76" width="57.13" height="46.76" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>App: Linux build (tested once in WSL) (In progress)</title></rect>
+<rect x="323.61" y="30.00" width="171.39" height="93.53" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="328.61" y="46.00" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">App</text></g>
+<g><title>Graphics: 4/5</title>
+<rect x="323.61" y="123.53" width="47.61" height="46.76" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Graphics: GLES2 on ANGLE (Done)</title></rect>
+<rect x="371.22" y="123.53" width="47.61" height="46.76" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Graphics: Native resolution and display modes (Done)</title></rect>
+<rect x="323.61" y="170.29" width="47.61" height="46.76" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Graphics: VSync and frame limiter (Done)</title></rect>
+<rect x="371.22" y="170.29" width="47.61" height="46.76" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Graphics: Field of view (Done)</title></rect>
+<rect x="323.61" y="217.06" width="95.22" height="46.76" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>Graphics: HD texture pack (work in progress) (In progress)</title></rect>
+<rect x="323.61" y="123.53" width="95.22" height="140.29" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="328.61" y="139.53" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Graphics</text></g>
+<g><title>Online: 4/4</title>
+<rect x="418.83" y="123.53" width="76.17" height="35.07" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Online: Store, ads, social, logins removed (Done)</title></rect>
+<rect x="418.83" y="158.60" width="76.17" height="35.07" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Online: Local Wi-Fi multiplayer (Done)</title></rect>
+<rect x="418.83" y="193.68" width="76.17" height="35.07" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Online: Peer addresses (ZeroTier) (Done)</title></rect>
+<rect x="418.83" y="228.75" width="76.17" height="35.07" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Online: Discord Rich Presence (Done)</title></rect>
+<rect x="418.83" y="123.53" width="76.17" height="140.29" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="423.83" y="139.53" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Online</text></g>
+<g><title>Audio: 2/2</title>
+<rect x="323.61" y="263.82" width="85.69" height="31.18" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Audio: Vox AudioTrack on SDL3 (Done)</title></rect>
+<rect x="409.31" y="263.82" width="85.69" height="31.18" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Audio: Click and drop-out fixes (Done)</title></rect>
+<rect x="323.61" y="263.82" width="171.39" height="31.18" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="328.61" y="279.82" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Audio</text></g>
+<text x="508.00" y="21.00" font-size="16" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Nintendo Switch: 76.7% (23/30)</text>
+<g><title>System: 6/7</title>
+<rect x="505.00" y="30.00" width="76.84" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>System: 4 GB guest via svcMapPhysicalMemory (Done)</title></rect>
+<rect x="581.84" y="30.00" width="76.84" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>System: Heap split for Mesa and stacks (Done)</title></rect>
+<rect x="658.69" y="30.00" width="76.84" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>System: In-process pipes for boost::asio (Done)</title></rect>
+<rect x="505.00" y="74.17" width="76.84" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>System: Exit through svcExitProcess (Done)</title></rect>
+<rect x="581.84" y="74.17" width="76.84" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>System: Physics-thread race fixed (Done)</title></rect>
+<rect x="658.69" y="74.17" width="76.84" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>System: Thread-stack leak fixed (Done)</title></rect>
+<rect x="505.00" y="118.33" width="230.53" height="44.17" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>System: Heap flat over a long session (In progress)</title></rect>
+<rect x="505.00" y="30.00" width="230.53" height="132.50" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="510.00" y="46.00" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">System</text></g>
+<g><title>Input: 4/7</title>
+<rect x="505.00" y="162.50" width="76.84" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Input: Controller buttons and sticks (Done)</title></rect>
+<rect x="581.84" y="162.50" width="76.84" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Input: Gyro aiming (Done)</title></rect>
+<rect x="658.69" y="162.50" width="76.84" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Input: Rumble (Done)</title></rect>
+<rect x="505.00" y="206.67" width="76.84" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Input: A/B swap and Switch button names (Done)</title></rect>
+<rect x="581.84" y="206.67" width="76.84" height="44.17" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>Input: libnx controller reading on hardware (In progress)</title></rect>
+<rect x="658.69" y="206.67" width="76.84" height="44.17" fill="#6e7681" stroke="#0d1117" stroke-width="1"><title>Input: Touchscreen (To do)</title></rect>
+<rect x="505.00" y="250.83" width="230.53" height="44.17" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>Input: System keyboard (Player IP) (In progress)</title></rect>
+<rect x="505.00" y="162.50" width="230.53" height="132.50" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="510.00" y="178.50" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Input</text></g>
+<g><title>Build: 4/4</title>
+<rect x="735.53" y="30.00" width="65.87" height="66.25" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Build: devkitPro CMake build (Done)</title></rect>
+<rect x="801.40" y="30.00" width="65.87" height="66.25" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Build: Translated code at -fPIE (Done)</title></rect>
+<rect x="735.53" y="96.25" width="65.87" height="66.25" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Build: .nro for the homebrew menu (Done)</title></rect>
+<rect x="801.40" y="96.25" width="65.87" height="66.25" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Build: Installable .nsp (Done)</title></rect>
+<rect x="735.53" y="30.00" width="131.73" height="132.50" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="740.53" y="46.00" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Build</text></g>
+<g><title>Hardware: 2/4</title>
+<rect x="867.27" y="30.00" width="65.87" height="66.25" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Hardware: Runs on a console (Done)</title></rect>
+<rect x="933.13" y="30.00" width="65.87" height="66.25" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Hardware: Loading: read cache, CPU boost, file-table lock (Done)</title></rect>
+<rect x="867.27" y="96.25" width="65.87" height="66.25" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>Hardware: Steady 60 fps (52-56 measured) (In progress)</title></rect>
+<rect x="933.13" y="96.25" width="65.87" height="66.25" fill="#6e7681" stroke="#0d1117" stroke-width="1"><title>Hardware: Multiplayer between two consoles (To do)</title></rect>
+<rect x="867.27" y="30.00" width="131.73" height="132.50" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="872.27" y="46.00" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Hardware</text></g>
+<g><title>Graphics: 3/3</title>
+<rect x="735.53" y="162.50" width="98.80" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Graphics: GLES2 on Mesa nouveau (Done)</title></rect>
+<rect x="735.53" y="206.67" width="98.80" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Graphics: GL call filtering (Done)</title></rect>
+<rect x="735.53" y="250.83" width="98.80" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Graphics: Shader pool and prewarm (Done)</title></rect>
+<rect x="735.53" y="162.50" width="98.80" height="132.50" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="740.53" y="178.50" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Graphics</text></g>
+<g><title>Game: 2/3</title>
+<rect x="834.33" y="162.50" width="98.80" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Game: Ten chapters in Ryujinx / Citron (Done)</title></rect>
+<rect x="834.33" y="206.67" width="98.80" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Game: Seven multiplayer maps hosted (Done)</title></rect>
+<rect x="834.33" y="250.83" width="98.80" height="44.17" fill="#6e7681" stroke="#0d1117" stroke-width="1"><title>Game: Offline cleanup and section-load fixes played (To do)</title></rect>
+<rect x="834.33" y="162.50" width="98.80" height="132.50" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="839.33" y="178.50" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Game</text></g>
+<g><title>Audio: 2/2</title>
+<rect x="933.13" y="162.50" width="65.87" height="66.25" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Audio: SDL2 audio queue (Done)</title></rect>
+<rect x="933.13" y="228.75" width="65.87" height="66.25" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Audio: Redesign after hardware drop-outs (Done)</title></rect>
+<rect x="933.13" y="162.50" width="65.87" height="132.50" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="938.13" y="178.50" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Audio</text></g>
+<text x="4.00" y="321.00" font-size="16" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">New Nintendo 3DS: 73.7% (28/38)</text>
+<g><title>Graphics: 6/8</title>
+<rect x="1.00" y="330.00" width="65.00" height="47.11" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Graphics: PICA200 backend over citro3d (Done)</title></rect>
+<rect x="66.00" y="330.00" width="65.00" height="47.11" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Graphics: Materials without fragment shaders (Done)</title></rect>
+<rect x="131.00" y="330.00" width="65.00" height="47.11" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Graphics: GL replay verification (Done)</title></rect>
+<rect x="1.00" y="377.11" width="65.00" height="47.11" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Graphics: Menus at 400x240 (Done)</title></rect>
+<rect x="66.00" y="377.11" width="65.00" height="47.11" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Graphics: Bottom-screen menus with touch (Done)</title></rect>
+<rect x="131.00" y="377.11" width="65.00" height="47.11" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Graphics: Fresh index numbers (console GPU) (Done)</title></rect>
+<rect x="1.00" y="424.22" width="97.50" height="47.11" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>Graphics: Depth fighting (float24) on the console (In progress)</title></rect>
+<rect x="98.50" y="424.22" width="97.50" height="47.11" fill="#6e7681" stroke="#0d1117" stroke-width="1"><title>Graphics: Cheaper per-draw index rewrite (To do)</title></rect>
+<rect x="1.00" y="330.00" width="195.00" height="141.33" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="6.00" y="346.00" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Graphics</text></g>
+<g><title>Code: 7/7</title>
+<rect x="1.00" y="471.33" width="65.00" height="41.22" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Code: Instruction census (Done)</title></rect>
+<rect x="66.00" y="471.33" width="65.00" height="41.22" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Code: ARMv6K patch set (143,859 sites) (Done)</title></rect>
+<rect x="131.00" y="471.33" width="65.00" height="41.22" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Code: Native so-loader (Done)</title></rect>
+<rect x="1.00" y="512.56" width="65.00" height="41.22" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Code: Assembly gates into the runtime (Done)</title></rect>
+<rect x="66.00" y="512.56" width="65.00" height="41.22" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Code: Hook table (137 hooks) (Done)</title></rect>
+<rect x="131.00" y="512.56" width="65.00" height="41.22" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Code: Kernel helper fixups (Done)</title></rect>
+<rect x="1.00" y="553.78" width="195.00" height="41.22" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Code: Hot imports without the gate (Done)</title></rect>
+<rect x="1.00" y="471.33" width="195.00" height="123.67" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="6.00" y="487.33" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Code</text></g>
+<g><title>Game: 3/5</title>
+<rect x="196.00" y="330.00" width="65.00" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Game: Title menu at 30 fps (Azahar) (Done)</title></rect>
+<rect x="261.00" y="330.00" width="65.00" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Game: Campaign chapters near 30 fps (Azahar) (Done)</title></rect>
+<rect x="196.00" y="374.17" width="65.00" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Game: Local match hosted (Azahar) (Done)</title></rect>
+<rect x="261.00" y="374.17" width="65.00" height="44.17" fill="#6e7681" stroke="#0d1117" stroke-width="1"><title>Game: Level end and match end (To do)</title></rect>
+<rect x="196.00" y="418.33" width="130.00" height="44.17" fill="#6e7681" stroke="#0d1117" stroke-width="1"><title>Game: Multiplayer between consoles (To do)</title></rect>
+<rect x="196.00" y="330.00" width="130.00" height="132.50" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="201.00" y="346.00" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Game</text></g>
+<g><title>Hardware: 2/5</title>
+<rect x="196.00" y="462.50" width="65.00" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Hardware: Boots on a New 3DS (Done)</title></rect>
+<rect x="261.00" y="462.50" width="65.00" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Hardware: Plays at about 26 fps (Done)</title></rect>
+<rect x="196.00" y="506.67" width="65.00" height="44.17" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>Hardware: 24-30 fps, no dips below 24 (In progress)</title></rect>
+<rect x="261.00" y="506.67" width="65.00" height="44.17" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>Hardware: HOME Menu suspend (In progress)</title></rect>
+<rect x="196.00" y="550.83" width="130.00" height="44.17" fill="#6e7681" stroke="#0d1117" stroke-width="1"><title>Hardware: No pause when changing weapons (To do)</title></rect>
+<rect x="196.00" y="462.50" width="130.00" height="132.50" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="201.00" y="478.50" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Hardware</text></g>
+<g><title>Files: 4/4</title>
+<rect x="326.00" y="330.00" width="48.29" height="71.35" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Files: Slim data (Done)</title></rect>
+<rect x="374.29" y="330.00" width="48.29" height="71.35" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Files: Packed archives (Done)</title></rect>
+<rect x="326.00" y="401.35" width="48.29" height="71.35" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Files: Loads 4x faster (Done)</title></rect>
+<rect x="374.29" y="401.35" width="48.29" height="71.35" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Files: .cia and SD card image (Done)</title></rect>
+<rect x="326.00" y="330.00" width="96.57" height="142.69" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="331.00" y="346.00" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Files</text></g>
+<g><title>Memory: 3/3</title>
+<rect x="422.57" y="330.00" width="72.43" height="47.56" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Memory: Layout in 178 MB (Done)</title></rect>
+<rect x="422.57" y="377.56" width="72.43" height="47.56" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Memory: Guest heap apart from the host&#x27;s (Done)</title></rect>
+<rect x="422.57" y="425.13" width="72.43" height="47.56" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Memory: Title-menu hang (pthread_join) fixed (Done)</title></rect>
+<rect x="422.57" y="330.00" width="72.43" height="142.69" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="427.57" y="346.00" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Memory</text></g>
+<g><title>Audio: 2/3</title>
+<rect x="326.00" y="472.69" width="84.50" height="40.77" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Audio: ndsp with the console&#x27;s DSP firmware (Done)</title></rect>
+<rect x="326.00" y="513.46" width="84.50" height="40.77" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Audio: CSND fallback (Done)</title></rect>
+<rect x="326.00" y="554.23" width="84.50" height="40.77" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>Audio: 80 ms sound queue on the console (In progress)</title></rect>
+<rect x="326.00" y="472.69" width="84.50" height="122.31" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="331.00" y="488.69" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Audio</text></g>
+<g><title>Input: 1/3</title>
+<rect x="410.50" y="472.69" width="84.50" height="40.77" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Input: Buttons, Circle Pad, C-Stick (Done)</title></rect>
+<rect x="410.50" y="513.46" width="84.50" height="40.77" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>Input: Controls page (In progress)</title></rect>
+<rect x="410.50" y="554.23" width="84.50" height="40.77" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>Input: Easier campaign and aim snap (In progress)</title></rect>
+<rect x="410.50" y="472.69" width="84.50" height="122.31" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="415.50" y="488.69" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Input</text></g>
+<text x="508.00" y="321.00" font-size="16" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Nintendo GameCube: 61.5% (16/26)</text>
+<g><title>Memory: 3/5</title>
+<rect x="505.00" y="330.00" width="85.50" height="49.07" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Memory: Pager: page table, DSI / ISI (Done)</title></rect>
+<rect x="590.50" y="330.00" width="85.50" height="49.07" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Memory: ARAM tier (Done)</title></rect>
+<rect x="505.00" y="379.07" width="85.50" height="49.07" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Memory: Page compression (Done)</title></rect>
+<rect x="590.50" y="379.07" width="85.50" height="49.07" fill="#6e7681" stroke="#0d1117" stroke-width="1"><title>Memory: Disc tier (To do)</title></rect>
+<rect x="505.00" y="428.15" width="171.00" height="49.07" fill="#6e7681" stroke="#0d1117" stroke-width="1"><title>Memory: Frame pinning for DMA (To do)</title></rect>
+<rect x="505.00" y="330.00" width="171.00" height="147.22" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="510.00" y="346.00" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Memory</text></g>
+<g><title>Code: 4/4</title>
+<rect x="505.00" y="477.22" width="85.50" height="58.89" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Code: Big-endian runtime (Done)</title></rect>
+<rect x="590.50" y="477.22" width="85.50" height="58.89" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Code: Translated code for the Gekko (Done)</title></rect>
+<rect x="505.00" y="536.11" width="85.50" height="58.89" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Code: Paged code file (Done)</title></rect>
+<rect x="590.50" y="536.11" width="85.50" height="58.89" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Code: Function ordering (Done)</title></rect>
+<rect x="505.00" y="477.22" width="171.00" height="117.78" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="510.00" y="493.22" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Code</text></g>
+<g><title>Graphics: 2/4</title>
+<rect x="676.00" y="330.00" width="66.50" height="75.71" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Graphics: GX backend (Done)</title></rect>
+<rect x="742.50" y="330.00" width="66.50" height="75.71" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Graphics: Render-target compositing (Done)</title></rect>
+<rect x="676.00" y="405.71" width="66.50" height="75.71" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>Graphics: Every material (In progress)</title></rect>
+<rect x="742.50" y="405.71" width="66.50" height="75.71" fill="#6e7681" stroke="#0d1117" stroke-width="1"><title>Graphics: 480p (To do)</title></rect>
+<rect x="676.00" y="330.00" width="133.00" height="151.43" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="681.00" y="346.00" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Graphics</text></g>
+<g><title>Toolchain: 3/3</title>
+<rect x="676.00" y="481.43" width="66.50" height="56.79" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Toolchain: devkitPPC and patched libogc2 (Done)</title></rect>
+<rect x="742.50" y="481.43" width="66.50" height="56.79" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Toolchain: libdvm (SD card) (Done)</title></rect>
+<rect x="676.00" y="538.21" width="133.00" height="56.79" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Toolchain: Dolphin harness and GDB (Done)</title></rect>
+<rect x="676.00" y="481.43" width="133.00" height="113.57" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="681.00" y="497.43" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Toolchain</text></g>
+<g><title>Files: 2/3</title>
+<rect x="809.00" y="330.00" width="95.00" height="53.00" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Files: Disc image tool (Done)</title></rect>
+<rect x="809.00" y="383.00" width="95.00" height="53.00" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Files: DVD file system (Done)</title></rect>
+<rect x="809.00" y="436.00" width="95.00" height="53.00" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>Files: SD card build for Swiss (In progress)</title></rect>
+<rect x="809.00" y="330.00" width="95.00" height="159.00" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="814.00" y="346.00" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Files</text></g>
+<g><title>Platform: 1/3</title>
+<rect x="904.00" y="330.00" width="95.00" height="53.00" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Platform: Threads, clocks, watchdog (Done)</title></rect>
+<rect x="904.00" y="383.00" width="95.00" height="53.00" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>Platform: Controller in the menus (In progress)</title></rect>
+<rect x="904.00" y="436.00" width="95.00" height="53.00" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>Platform: Audio over the AI DMA (In progress)</title></rect>
+<rect x="904.00" y="330.00" width="95.00" height="159.00" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="909.00" y="346.00" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Platform</text></g>
+<g><title>Game: 1/2</title>
+<rect x="809.00" y="489.00" width="95.00" height="53.00" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Game: Title menu in Dolphin (Done)</title></rect>
+<rect x="809.00" y="542.00" width="95.00" height="53.00" fill="#6e7681" stroke="#0d1117" stroke-width="1"><title>Game: A campaign level (To do)</title></rect>
+<rect x="809.00" y="489.00" width="95.00" height="106.00" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="814.00" y="505.00" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Game</text></g>
+<g><title>Hardware: 0/2</title>
+<rect x="904.00" y="489.00" width="95.00" height="53.00" fill="#6e7681" stroke="#0d1117" stroke-width="1"><title>Hardware: First console test (To do)</title></rect>
+<rect x="904.00" y="542.00" width="95.00" height="53.00" fill="#6e7681" stroke="#0d1117" stroke-width="1"><title>Hardware: Measurement and optimisation (To do)</title></rect>
+<rect x="904.00" y="489.00" width="95.00" height="106.00" fill="none" stroke="#0d1117" stroke-width="3"/>
+<text x="909.00" y="505.00" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Hardware</text></g>
+<rect x="6" y="609" width="11" height="11" fill="#2ea043"/>
+<text x="22" y="619" font-size="12" fill="#8b949e">Done</text>
+<rect x="66" y="609" width="11" height="11" fill="#bb8009"/>
+<text x="82" y="619" font-size="12" fill="#8b949e">In progress</text>
+<rect x="175" y="609" width="11" height="11" fill="#6e7681"/>
+<text x="191" y="619" font-size="12" fill="#8b949e">To do</text>
+<text x="994" y="619" font-size="12" fill="#8b949e" text-anchor="end">One cell per feature, grouped by area; the percentage counts features done</text>
 </svg>

@@ -23,7 +23,7 @@ runtime (`.cia`). A GameCube port is being designed and built.
 | [Nintendo GameCube](gamecube.md) | The GameCube port in progress: why it is hard (24 MB, one 486 MHz core), the measurements that decided its design (code and heap working sets, compressibility), the hardware facts it relies on, demand paging through the MMU to ARAM and the disc, big-endian translation, the GX backend, the plan |
 | [Debugging](debugging.md) | Event log, scripted test runs, debug options, analysis tools, how the harder bugs were found |
 | [Open issues](open-issues.md) | Known problems, untested paths, ideas for later |
-| [Status and branches](status/README.md) | The milestone status of every port (`milestones.json`, `tools/status.py`), the per-port branches, what is never committed |
+| [Status and branches](status/README.md) | The status of every port (`milestones.json`, `tools/status.py`), the per-port branches, what is never committed |
 | [Work history](history/README.md) | What was done, topic by topic (Switch port, performance, loading, stability, audio, controls, diagnostics, testing, test builds), with measurements and what is still open |
 
 Conventions used throughout:

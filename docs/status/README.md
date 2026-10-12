@@ -1,16 +1,24 @@
 # Status and port branches
 
-The milestone status shown at the top of the repository's README comes from one file:
+The status shown at the top of the repository's README comes from one file:
 
-- `milestones.json`: every port (name, branch, guide, one-line summary) and its milestones, each
-  `done`, `partial` (in progress) or `todo`, with the day it was reached or started.
-- `tools/status.py` reads it and writes, here, `progress.svg` (the milestone map: one row per
-  port, one numbered cell per milestone), `history.svg` (milestones done per port by day),
-  `badge-<port>.svg`, and the per-port milestone tables in `README.md` between the
-  `status:begin` / `status:end` markers.
+- `milestones.json`: every port (name, branch, guide, one-line summary), its areas (code,
+  runtime, graphics, input, ...) and each area's features, each `done`, `partial` (in
+  progress) or `todo`, with the day it was reached or started (required when done).
+- `tools/status.py` reads it and writes, here:
+  - `progress.svg`: one panel per port, in the style of AnyPS5's status map: a squarified
+    treemap of the port's areas, each sized by its number of features, one cell per feature
+    (green done, amber in progress, grey to do), and the share done in the heading. Every cell
+    and area carries its name as a tooltip when the image is opened on its own;
+  - `history.svg`: each port's share done by day (features done by then over today's total);
+  - `badge-<port>.svg`: the share done as a badge;
+  - the per-port feature tables in `README.md` between the `status:begin` / `status:end`
+    markers.
+
+The percentage counts only features done; a feature in progress adds nothing until it is done.
 
 To change the status: edit `milestones.json`, run `python tools/status.py`, commit the JSON, the
-images and the README together. A milestone's state should match the port's guide (the
+images and the README together. A feature's state should match the port's guide (the
 "Status" sections of [3DS](../3ds.md), [GameCube](../gamecube.md), [Switch](../switch.md) and
 [Open issues](../open-issues.md)): "done" means checked in a run, as the rest of these
 documents use the word.

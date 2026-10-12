@@ -7,22 +7,72 @@
       "branch": "port/windows",
       "doc": "docs/app-and-settings.md",
       "summary": "Playable: campaign and local Wi-Fi matches, 240 fps, launcher; HD textures in progress.",
-      "milestones": [
-        {"name": "ELF / OBB reverse engineering, ARM to C recompiler", "state": "done", "date": "2026-10-07"},
-        {"name": "Every instruction incl. Thumb, differential tests against Unicorn", "state": "done", "date": "2026-10-07"},
-        {"name": "Runtime: libc, pthreads, heap, setjmp, C++ exceptions", "state": "done", "date": "2026-10-07"},
-        {"name": "Fake JNI / Java, Android lifecycle, GLES2 on ANGLE", "state": "done", "date": "2026-10-07"},
-        {"name": "Audio (Vox AudioTrack on SDL3)", "state": "done", "date": "2026-10-07"},
-        {"name": "Launcher, nova3.ini, display modes, VSync, FOV, Saved Games", "state": "done", "date": "2026-10-07"},
-        {"name": "Keyboard / mouse and gamepad controls, menus without touch", "state": "done", "date": "2026-10-08"},
-        {"name": "Campaign playable: loading, tutorials, QTEs, slow motion, section loads", "state": "done", "date": "2026-10-08"},
-        {"name": "Offline game: store, ads, social, logins removed", "state": "done", "date": "2026-10-08"},
-        {"name": "Local Wi-Fi multiplayer (LAN / ZeroTier peers)", "state": "done", "date": "2026-10-08"},
-        {"name": "HD texture pack: upscaled textures swapped in at upload (work in progress)", "state": "partial", "date": "2026-10-08"},
-        {"name": "Performance pass (flow analysis, inlining, native hot paths, PGO)", "state": "done", "date": "2026-10-10"},
-        {"name": "Linux build (tested once, Ubuntu 24.04 in WSL)", "state": "partial", "date": "2026-10-07"},
-        {"name": "Physical gamepad, grenade / melee keys, uncapped fps tested", "state": "todo"},
-        {"name": "Translated functions replaced with readable C++", "state": "partial"}
+      "areas": [
+        {"name": "Code", "items": [
+          {"name": "ARM to C translation of every function", "state": "done", "date": "2026-10-07"},
+          {"name": "Thumb", "state": "done", "date": "2026-10-07"},
+          {"name": "Differential tests against Unicorn", "state": "done", "date": "2026-10-07"},
+          {"name": "Register and flag flow analysis", "state": "done", "date": "2026-10-10"},
+          {"name": "Inlined division helpers and imports", "state": "done", "date": "2026-10-10"},
+          {"name": "Native hot paths", "state": "done", "date": "2026-10-09"},
+          {"name": "Profile-guided optimisation", "state": "done", "date": "2026-10-10"},
+          {"name": "Translated functions replaced with readable C++", "state": "partial"}
+        ]},
+        {"name": "Runtime", "items": [
+          {"name": "ELF loader, relocations, import slots", "state": "done", "date": "2026-10-07"},
+          {"name": "Guest heap", "state": "done", "date": "2026-10-07"},
+          {"name": "pthreads, semaphores, errno", "state": "done", "date": "2026-10-07"},
+          {"name": "libc: strings, stdio, files, libm, time", "state": "done", "date": "2026-10-07"},
+          {"name": "setjmp / longjmp", "state": "done", "date": "2026-10-07"},
+          {"name": "C++ exceptions", "state": "done", "date": "2026-10-07"},
+          {"name": "Fake JNI and Java classes", "state": "done", "date": "2026-10-07"},
+          {"name": "Symbolized crash reports", "state": "done", "date": "2026-10-08"}
+        ]},
+        {"name": "Graphics", "items": [
+          {"name": "GLES2 on ANGLE", "state": "done", "date": "2026-10-07"},
+          {"name": "Native resolution and display modes", "state": "done", "date": "2026-10-07"},
+          {"name": "VSync and frame limiter", "state": "done", "date": "2026-10-07"},
+          {"name": "Field of view", "state": "done", "date": "2026-10-08"},
+          {"name": "HD texture pack (work in progress)", "state": "partial", "date": "2026-10-08"}
+        ]},
+        {"name": "Audio", "items": [
+          {"name": "Vox AudioTrack on SDL3", "state": "done", "date": "2026-10-07"},
+          {"name": "Click and drop-out fixes", "state": "done", "date": "2026-10-09"}
+        ]},
+        {"name": "Input", "items": [
+          {"name": "Keyboard and mouse gameplay", "state": "done", "date": "2026-10-08"},
+          {"name": "Menus without touch", "state": "done", "date": "2026-10-08"},
+          {"name": "Gamepad mapping", "state": "done", "date": "2026-10-08"},
+          {"name": "Rebinding (first control per device shown)", "state": "partial", "date": "2026-10-08"},
+          {"name": "Physical gamepad tested", "state": "todo"},
+          {"name": "Grenade, melee and interact keys tested", "state": "todo"}
+        ]},
+        {"name": "Game", "items": [
+          {"name": "Loading screens", "state": "done", "date": "2026-10-08"},
+          {"name": "Tutorials and QTEs", "state": "done", "date": "2026-10-08"},
+          {"name": "Slow motion at high frame rates", "state": "done", "date": "2026-10-08"},
+          {"name": "Cutscene skip", "state": "done", "date": "2026-10-08"},
+          {"name": "Jeep ride at high frame rates", "state": "done", "date": "2026-10-09"},
+          {"name": "Section loads (other levels by replay only)", "state": "partial", "date": "2026-10-09"},
+          {"name": "Campaign's ten chapters toured", "state": "done", "date": "2026-10-09"},
+          {"name": "Move QTEs, jeep, mech, iron-sight tutorials", "state": "todo"},
+          {"name": "End-of-match and end-of-mission screens", "state": "todo"},
+          {"name": "Uncapped frame rates in play", "state": "todo"}
+        ]},
+        {"name": "Online", "items": [
+          {"name": "Store, ads, social, logins removed", "state": "done", "date": "2026-10-08"},
+          {"name": "Local Wi-Fi multiplayer", "state": "done", "date": "2026-10-08"},
+          {"name": "Peer addresses (ZeroTier)", "state": "done", "date": "2026-10-10"},
+          {"name": "Discord Rich Presence", "state": "done", "date": "2026-10-08"}
+        ]},
+        {"name": "App", "items": [
+          {"name": "Launcher", "state": "done", "date": "2026-10-07"},
+          {"name": "nova3.ini", "state": "done", "date": "2026-10-07"},
+          {"name": "Saves in Saved Games", "state": "done", "date": "2026-10-08"},
+          {"name": "Packaged copy (tools/package.py)", "state": "done", "date": "2026-10-08"},
+          {"name": "Migration on a real install", "state": "partial"},
+          {"name": "Linux build (tested once in WSL)", "state": "partial", "date": "2026-10-07"}
+        ]}
       ]
     },
     {
@@ -31,19 +81,51 @@
       "branch": "port/switch",
       "doc": "docs/switch.md",
       "summary": "Homebrew .nsp / .nro: whole campaign and local matches in emulators, 52-56 fps on hardware.",
-      "milestones": [
-        {"name": "devkitPro build: os_switch.cpp, SDL2, Mesa GLES2", "state": "done", "date": "2026-10-09"},
-        {"name": "Installable .nsp (hacBrewPack, RomFS game files)", "state": "done", "date": "2026-10-09"},
-        {"name": "Campaign's ten chapters played through in Ryujinx / Citron", "state": "done", "date": "2026-10-09"},
-        {"name": "Seven multiplayer maps hosted locally", "state": "done", "date": "2026-10-09"},
-        {"name": "Runs on a real console (players' logs)", "state": "done", "date": "2026-10-09"},
-        {"name": "Physics-thread race and thread-stack leak fixed", "state": "done", "date": "2026-10-09"},
-        {"name": "Gyro, rumble, Switch button layout and names", "state": "done", "date": "2026-10-09"},
-        {"name": "Loading: read cache, CPU boost, shader prewarm", "state": "done", "date": "2026-10-09"},
-        {"name": "Steady 60 fps on hardware (52-56 before the last pass)", "state": "partial", "date": "2026-10-10"},
-        {"name": "libnx controller, touchscreen and keyboard paths verified", "state": "partial"},
-        {"name": "Local multiplayer between two consoles", "state": "todo"},
-        {"name": "Latest build (offline cleanup, section-load fixes) played", "state": "todo"}
+      "areas": [
+        {"name": "Build", "items": [
+          {"name": "devkitPro CMake build", "state": "done", "date": "2026-10-09"},
+          {"name": "Translated code at -fPIE", "state": "done", "date": "2026-10-10"},
+          {"name": ".nro for the homebrew menu", "state": "done", "date": "2026-10-09"},
+          {"name": "Installable .nsp", "state": "done", "date": "2026-10-09"}
+        ]},
+        {"name": "System", "items": [
+          {"name": "4 GB guest via svcMapPhysicalMemory", "state": "done", "date": "2026-10-09"},
+          {"name": "Heap split for Mesa and stacks", "state": "done", "date": "2026-10-09"},
+          {"name": "In-process pipes for boost::asio", "state": "done", "date": "2026-10-09"},
+          {"name": "Exit through svcExitProcess", "state": "done", "date": "2026-10-09"},
+          {"name": "Physics-thread race fixed", "state": "done", "date": "2026-10-09"},
+          {"name": "Thread-stack leak fixed", "state": "done", "date": "2026-10-09"},
+          {"name": "Heap flat over a long session", "state": "partial"}
+        ]},
+        {"name": "Graphics", "items": [
+          {"name": "GLES2 on Mesa nouveau", "state": "done", "date": "2026-10-09"},
+          {"name": "GL call filtering", "state": "done", "date": "2026-10-09"},
+          {"name": "Shader pool and prewarm", "state": "done", "date": "2026-10-09"}
+        ]},
+        {"name": "Audio", "items": [
+          {"name": "SDL2 audio queue", "state": "done", "date": "2026-10-09"},
+          {"name": "Redesign after hardware drop-outs", "state": "done", "date": "2026-10-09"}
+        ]},
+        {"name": "Input", "items": [
+          {"name": "Controller buttons and sticks", "state": "done", "date": "2026-10-09"},
+          {"name": "Gyro aiming", "state": "done", "date": "2026-10-09"},
+          {"name": "Rumble", "state": "done", "date": "2026-10-09"},
+          {"name": "A/B swap and Switch button names", "state": "done", "date": "2026-10-09"},
+          {"name": "libnx controller reading on hardware", "state": "partial"},
+          {"name": "Touchscreen", "state": "todo"},
+          {"name": "System keyboard (Player IP)", "state": "partial", "date": "2026-10-09"}
+        ]},
+        {"name": "Game", "items": [
+          {"name": "Ten chapters in Ryujinx / Citron", "state": "done", "date": "2026-10-09"},
+          {"name": "Seven multiplayer maps hosted", "state": "done", "date": "2026-10-09"},
+          {"name": "Offline cleanup and section-load fixes played", "state": "todo"}
+        ]},
+        {"name": "Hardware", "items": [
+          {"name": "Runs on a console", "state": "done", "date": "2026-10-09"},
+          {"name": "Loading: read cache, CPU boost, file-table lock", "state": "done", "date": "2026-10-09"},
+          {"name": "Steady 60 fps (52-56 measured)", "state": "partial", "date": "2026-10-10"},
+          {"name": "Multiplayer between two consoles", "state": "todo"}
+        ]}
       ]
     },
     {
@@ -52,19 +134,61 @@
       "branch": "port/3ds",
       "doc": "docs/3ds.md",
       "summary": "The game's own ARM code runs natively; boots and plays on a New 3DS at about 26 fps.",
-      "milestones": [
-        {"name": "ARMv6K patch set (v6patch.py: 143,859 sites)", "state": "done", "date": "2026-10-10"},
-        {"name": "Native so-loader, assembly gates, 137 hooks", "state": "done", "date": "2026-10-10"},
-        {"name": "PICA200 GL backend over citro3d", "state": "done", "date": "2026-10-10"},
-        {"name": "Boot to the title menu in Azahar", "state": "done", "date": "2026-10-10"},
-        {"name": "Campaign chapters at or near 30 fps in Azahar", "state": "done", "date": "2026-10-10"},
-        {"name": "Slim data and packed archives: loads 4x faster", "state": "done", "date": "2026-10-10"},
-        {"name": "Menus on the bottom screen with touch", "state": "done", "date": "2026-10-10"},
-        {"name": "Runs on a real New 3DS (SD card image)", "state": "done", "date": "2026-10-12"},
-        {"name": "24-30 fps on the console, no dips below 24", "state": "partial", "date": "2026-10-12"},
-        {"name": "Depth-fighting, HOME Menu and sound fixes checked on the console", "state": "partial"},
-        {"name": "No pause when changing weapons", "state": "todo"},
-        {"name": "Local multiplayer between consoles", "state": "todo"}
+      "areas": [
+        {"name": "Code", "items": [
+          {"name": "Instruction census", "state": "done", "date": "2026-10-10"},
+          {"name": "ARMv6K patch set (143,859 sites)", "state": "done", "date": "2026-10-10"},
+          {"name": "Native so-loader", "state": "done", "date": "2026-10-10"},
+          {"name": "Assembly gates into the runtime", "state": "done", "date": "2026-10-10"},
+          {"name": "Hook table (137 hooks)", "state": "done", "date": "2026-10-10"},
+          {"name": "Kernel helper fixups", "state": "done", "date": "2026-10-10"},
+          {"name": "Hot imports without the gate", "state": "done", "date": "2026-10-10"}
+        ]},
+        {"name": "Memory", "items": [
+          {"name": "Layout in 178 MB", "state": "done", "date": "2026-10-10"},
+          {"name": "Guest heap apart from the host's", "state": "done", "date": "2026-10-10"},
+          {"name": "Title-menu hang (pthread_join) fixed", "state": "done", "date": "2026-10-10"}
+        ]},
+        {"name": "Graphics", "items": [
+          {"name": "PICA200 backend over citro3d", "state": "done", "date": "2026-10-10"},
+          {"name": "Materials without fragment shaders", "state": "done", "date": "2026-10-10"},
+          {"name": "GL replay verification", "state": "done", "date": "2026-10-10"},
+          {"name": "Menus at 400x240", "state": "done", "date": "2026-10-10"},
+          {"name": "Bottom-screen menus with touch", "state": "done", "date": "2026-10-10"},
+          {"name": "Fresh index numbers (console GPU)", "state": "done", "date": "2026-10-12"},
+          {"name": "Depth fighting (float24) on the console", "state": "partial", "date": "2026-10-12"},
+          {"name": "Cheaper per-draw index rewrite", "state": "todo"}
+        ]},
+        {"name": "Audio", "items": [
+          {"name": "ndsp with the console's DSP firmware", "state": "done", "date": "2026-10-10"},
+          {"name": "CSND fallback", "state": "done", "date": "2026-10-10"},
+          {"name": "80 ms sound queue on the console", "state": "partial", "date": "2026-10-12"}
+        ]},
+        {"name": "Input", "items": [
+          {"name": "Buttons, Circle Pad, C-Stick", "state": "done", "date": "2026-10-10"},
+          {"name": "Controls page", "state": "partial", "date": "2026-10-12"},
+          {"name": "Easier campaign and aim snap", "state": "partial", "date": "2026-10-12"}
+        ]},
+        {"name": "Files", "items": [
+          {"name": "Slim data", "state": "done", "date": "2026-10-10"},
+          {"name": "Packed archives", "state": "done", "date": "2026-10-10"},
+          {"name": "Loads 4x faster", "state": "done", "date": "2026-10-10"},
+          {"name": ".cia and SD card image", "state": "done", "date": "2026-10-12"}
+        ]},
+        {"name": "Game", "items": [
+          {"name": "Title menu at 30 fps (Azahar)", "state": "done", "date": "2026-10-10"},
+          {"name": "Campaign chapters near 30 fps (Azahar)", "state": "done", "date": "2026-10-10"},
+          {"name": "Local match hosted (Azahar)", "state": "done", "date": "2026-10-10"},
+          {"name": "Level end and match end", "state": "todo"},
+          {"name": "Multiplayer between consoles", "state": "todo"}
+        ]},
+        {"name": "Hardware", "items": [
+          {"name": "Boots on a New 3DS", "state": "done", "date": "2026-10-12"},
+          {"name": "Plays at about 26 fps", "state": "done", "date": "2026-10-12"},
+          {"name": "24-30 fps, no dips below 24", "state": "partial", "date": "2026-10-12"},
+          {"name": "HOME Menu suspend", "state": "partial", "date": "2026-10-12"},
+          {"name": "No pause when changing weapons", "state": "todo"}
+        ]}
       ]
     },
     {
@@ -73,18 +197,49 @@
       "branch": "port/gamecube",
       "doc": "docs/gamecube.md",
       "summary": "24 MB and one core: demand paging to ARAM and disc; the title menu runs in Dolphin.",
-      "milestones": [
-        {"name": "Toolchain and Dolphin test harness (devkitPPC, libogc2)", "state": "done", "date": "2026-10-12"},
-        {"name": "Pager: page table, DSI / ISI handlers, ARAM with compression", "state": "done", "date": "2026-10-12"},
-        {"name": "Big-endian runtime", "state": "done", "date": "2026-10-12"},
-        {"name": "Translated code for the Gekko, paged code file", "state": "done", "date": "2026-10-12"},
-        {"name": "Disc image tool and DVD file layer", "state": "done", "date": "2026-10-12"},
-        {"name": "Boots into the title menu in Dolphin", "state": "done", "date": "2026-10-12"},
-        {"name": "GX backend: every material", "state": "partial", "date": "2026-10-12"},
-        {"name": "Platform: controller, audio, video modes", "state": "partial", "date": "2026-10-12"},
-        {"name": "A campaign level in Dolphin", "state": "todo"},
-        {"name": "First console test (Swiss, SD card build)", "state": "todo"},
-        {"name": "Disc tier of the pager, measurement and optimisation", "state": "todo"}
+      "areas": [
+        {"name": "Toolchain", "items": [
+          {"name": "devkitPPC and patched libogc2", "state": "done", "date": "2026-10-12"},
+          {"name": "libdvm (SD card)", "state": "done", "date": "2026-10-12"},
+          {"name": "Dolphin harness and GDB", "state": "done", "date": "2026-10-12"}
+        ]},
+        {"name": "Memory", "items": [
+          {"name": "Pager: page table, DSI / ISI", "state": "done", "date": "2026-10-12"},
+          {"name": "ARAM tier", "state": "done", "date": "2026-10-12"},
+          {"name": "Page compression", "state": "done", "date": "2026-10-12"},
+          {"name": "Disc tier", "state": "todo"},
+          {"name": "Frame pinning for DMA", "state": "todo"}
+        ]},
+        {"name": "Code", "items": [
+          {"name": "Big-endian runtime", "state": "done", "date": "2026-10-12"},
+          {"name": "Translated code for the Gekko", "state": "done", "date": "2026-10-12"},
+          {"name": "Paged code file", "state": "done", "date": "2026-10-12"},
+          {"name": "Function ordering", "state": "done", "date": "2026-10-12"}
+        ]},
+        {"name": "Files", "items": [
+          {"name": "Disc image tool", "state": "done", "date": "2026-10-12"},
+          {"name": "DVD file system", "state": "done", "date": "2026-10-12"},
+          {"name": "SD card build for Swiss", "state": "partial", "date": "2026-10-12"}
+        ]},
+        {"name": "Graphics", "items": [
+          {"name": "GX backend", "state": "done", "date": "2026-10-12"},
+          {"name": "Render-target compositing", "state": "done", "date": "2026-10-12"},
+          {"name": "Every material", "state": "partial", "date": "2026-10-12"},
+          {"name": "480p", "state": "todo"}
+        ]},
+        {"name": "Platform", "items": [
+          {"name": "Threads, clocks, watchdog", "state": "done", "date": "2026-10-12"},
+          {"name": "Controller in the menus", "state": "partial", "date": "2026-10-12"},
+          {"name": "Audio over the AI DMA", "state": "partial", "date": "2026-10-12"}
+        ]},
+        {"name": "Game", "items": [
+          {"name": "Title menu in Dolphin", "state": "done", "date": "2026-10-12"},
+          {"name": "A campaign level", "state": "todo"}
+        ]},
+        {"name": "Hardware", "items": [
+          {"name": "First console test", "state": "todo"},
+          {"name": "Measurement and optimisation", "state": "todo"}
+        ]}
       ]
     }
   ]
