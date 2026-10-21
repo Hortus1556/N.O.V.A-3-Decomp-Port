@@ -59,8 +59,8 @@ QTEs), power, jump, move, look, cutscene skip, interact (boarding the jeep), gre
 power (with Slow and Paralyze unlocked it steps through both and none), the jeep ride, the mech, a turret, the sniper
 scope's zoom, the jetpack, the sphere puzzle's console, the hanging sequence. **Untested**:
 melee, next grenade type and detonate in play (the mines are only found further into the
-chapters), the co-op heal button (needs a second player), and gamepads with a physical
-controller.
+chapters), the co-op heal button (needs a second player), and a physical controller on Windows (the
+shared controller logic was played with the Switch's controllers on hardware).
 
 **Crouch** does not exist for the player in this game: only enemies crouch (`CNPCComponent::
 EnterCrouch`, the `NpcCmd_Crouch` script command). The player component has no crouch state,

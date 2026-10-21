@@ -56,7 +56,7 @@ Over time, translated functions are replaced with readable C++ through the same 
 
 <!-- status:begin (tools/status.py) -->
 <details>
-<summary><b>Windows x64</b>: 77.6% (38/49 done, 6 in progress). Playable: campaign and local Wi-Fi matches, 240 fps, launcher; HD textures in progress.</summary>
+<summary><b>Windows x64</b>: 79.6% (39/49 done, 6 in progress). Playable: campaign and local Wi-Fi matches, 240 fps, launcher; HD textures in progress.</summary>
 
 Branch [`port/windows`](../../tree/port/windows) · details in [app-and-settings.md](docs/app-and-settings.md)
 
@@ -89,7 +89,7 @@ Branch [`port/windows`](../../tree/port/windows) · details in [app-and-settings
 | Input | Menus without touch | ✅ Done | 2026-10-08 |
 | Input | Gamepad mapping | ✅ Done | 2026-10-08 |
 | Input | Rebinding (first control per device shown) | 🟡 In progress | 2026-10-08 |
-| Input | Physical gamepad tested | ⬜ To do |  |
+| Input | Physical gamepad (played on Switch hardware) | ✅ Done | 2026-10-21 |
 | Input | Grenade, melee and interact keys tested | ⬜ To do |  |
 | Game | Loading screens | ✅ Done | 2026-10-08 |
 | Game | Tutorials and QTEs | ✅ Done | 2026-10-08 |
@@ -115,7 +115,7 @@ Branch [`port/windows`](../../tree/port/windows) · details in [app-and-settings
 </details>
 
 <details>
-<summary><b>Nintendo Switch</b>: 76.7% (23/30 done, 4 in progress). Homebrew .nsp / .nro: whole campaign and local matches in emulators, 52-56 fps on hardware.</summary>
+<summary><b>Nintendo Switch</b>: 80.0% (24/30 done, 3 in progress). Homebrew .nsp / .nro: whole campaign and local matches in emulators, 52-56 fps on hardware.</summary>
 
 Branch [`port/switch`](../../tree/port/switch) · details in [switch.md](docs/switch.md)
 
@@ -141,7 +141,7 @@ Branch [`port/switch`](../../tree/port/switch) · details in [switch.md](docs/sw
 | Input | Gyro aiming | ✅ Done | 2026-10-09 |
 | Input | Rumble | ✅ Done | 2026-10-09 |
 | Input | A/B swap and Switch button names | ✅ Done | 2026-10-09 |
-| Input | libnx controller reading on hardware | 🟡 In progress |  |
+| Input | libnx controller reading on hardware | ✅ Done | 2026-10-21 |
 | Input | Touchscreen | ⬜ To do |  |
 | Input | System keyboard (Player IP) | 🟡 In progress | 2026-10-09 |
 | Game | Ten chapters in Ryujinx / Citron | ✅ Done | 2026-10-09 |

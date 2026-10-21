@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-13",
+  "updated": "2026-10-21",
   "ports": [
     {
       "id": "windows",
@@ -44,7 +44,7 @@
           {"name": "Menus without touch", "state": "done", "date": "2026-10-08"},
           {"name": "Gamepad mapping", "state": "done", "date": "2026-10-08"},
           {"name": "Rebinding (first control per device shown)", "state": "partial", "date": "2026-10-08"},
-          {"name": "Physical gamepad tested", "state": "todo"},
+          {"name": "Physical gamepad (played on Switch hardware)", "state": "done", "date": "2026-10-21"},
           {"name": "Grenade, melee and interact keys tested", "state": "todo"}
         ]},
         {"name": "Game", "items": [
@@ -111,7 +111,7 @@
           {"name": "Gyro aiming", "state": "done", "date": "2026-10-09"},
           {"name": "Rumble", "state": "done", "date": "2026-10-09"},
           {"name": "A/B swap and Switch button names", "state": "done", "date": "2026-10-09"},
-          {"name": "libnx controller reading on hardware", "state": "partial"},
+          {"name": "libnx controller reading on hardware", "state": "done", "date": "2026-10-21"},
           {"name": "Touchscreen", "state": "todo"},
           {"name": "System keyboard (Player IP)", "state": "partial", "date": "2026-10-09"}
         ]},

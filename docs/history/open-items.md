@@ -11,7 +11,8 @@ The full list is in [Open issues](../open-issues.md). From this work:
 **Untested**
 - Entering a Player IP on the console (the keyboard opens; typing into it couldn't be scripted).
 - Local multiplayer between two consoles.
-- The libnx controller, touchscreen and keyboard paths beyond what the test scripts drive.
+- The libnx touchscreen and keyboard paths beyond what the test scripts drive (the controller
+  reading has been played on hardware).
 
 **Unexplained, not reproduced**
 - One PC test probe spun at 100% of a core before the title menu, while the machine was

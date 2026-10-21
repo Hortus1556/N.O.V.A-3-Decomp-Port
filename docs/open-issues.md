@@ -32,7 +32,10 @@
 
 ## Untested
 
-- Gameplay with a physical gamepad.
+- A physical controller on Windows: the controller logic after the pad state (mapping, sticks,
+  menus, rumble requests) is shared with the Switch and was played there on hardware; the
+  SDL3 side (hot-plugging, button and axis events, the prompt switch, `SDL_RumbleGamepad`) has
+  not had a real controller.
 - Grenade, melee and interact keys (context buttons), next power and next grenade type (need
   two or more unlocked).
 - Move QTEs (`CQTEMove`), the jeep, mech, iron-sight and detonate tutorials.
@@ -60,9 +63,8 @@ emulator, no audio drops. Open:
   the thread).
 - **JNI local references** are never freed (`DeleteLocalRef` is a no-op): the web services
   leave a few small strings per request (about a megabyte over hours of play).
-- **Controllers** were driven through the pad state by the test script; the libnx reading
-  itself (`poll_switch` in `host/input.cpp`), the touchscreen and the system keyboard have
-  not been exercised.
+- **Controllers**: the libnx reading (`poll_switch` in `host/input.cpp`) has been played on
+  hardware; the touchscreen and the system keyboard have not been exercised.
 - **Local multiplayer** between consoles is untested (one emulator instance at a time).
 
 ## Performance

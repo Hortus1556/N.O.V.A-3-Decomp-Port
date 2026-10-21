@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 628" width="1000" height="628" font-family="-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" role="img" aria-label="Status of every port">
 <rect width="1000" height="628" fill="#0d1117"/>
-<text x="4.00" y="21.00" font-size="16" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Windows x64: 77.6% (38/49)</text>
+<text x="4.00" y="21.00" font-size="16" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Windows x64: 79.6% (39/49)</text>
 <g><title>Game: 6/10</title>
 <rect x="1.00" y="30.00" width="45.37" height="49.07" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Game: Loading screens (Done)</title></rect>
 <rect x="46.37" y="30.00" width="45.37" height="49.07" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Game: Tutorials and QTEs (Done)</title></rect>
@@ -36,12 +36,12 @@
 <rect x="253.04" y="130.95" width="70.57" height="50.48" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Runtime: Symbolized crash reports (Done)</title></rect>
 <rect x="182.47" y="30.00" width="141.14" height="151.43" fill="none" stroke="#0d1117" stroke-width="3"/>
 <text x="187.47" y="46.00" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Runtime</text></g>
-<g><title>Input: 3/6</title>
+<g><title>Input: 4/6</title>
 <rect x="182.47" y="181.43" width="47.05" height="56.79" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Input: Keyboard and mouse gameplay (Done)</title></rect>
 <rect x="229.52" y="181.43" width="47.05" height="56.79" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Input: Menus without touch (Done)</title></rect>
 <rect x="276.56" y="181.43" width="47.05" height="56.79" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Input: Gamepad mapping (Done)</title></rect>
 <rect x="182.47" y="238.21" width="47.05" height="56.79" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>Input: Rebinding (first control per device shown) (In progress)</title></rect>
-<rect x="229.52" y="238.21" width="47.05" height="56.79" fill="#6e7681" stroke="#0d1117" stroke-width="1"><title>Input: Physical gamepad tested (To do)</title></rect>
+<rect x="229.52" y="238.21" width="47.05" height="56.79" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Input: Physical gamepad (played on Switch hardware) (Done)</title></rect>
 <rect x="276.56" y="238.21" width="47.05" height="56.79" fill="#6e7681" stroke="#0d1117" stroke-width="1"><title>Input: Grenade, melee and interact keys tested (To do)</title></rect>
 <rect x="182.47" y="181.43" width="141.14" height="113.57" fill="none" stroke="#0d1117" stroke-width="3"/>
 <text x="187.47" y="197.43" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Input</text></g>
@@ -74,7 +74,7 @@
 <rect x="409.31" y="263.82" width="85.69" height="31.18" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Audio: Click and drop-out fixes (Done)</title></rect>
 <rect x="323.61" y="263.82" width="171.39" height="31.18" fill="none" stroke="#0d1117" stroke-width="3"/>
 <text x="328.61" y="279.82" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Audio</text></g>
-<text x="508.00" y="21.00" font-size="16" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Nintendo Switch: 76.7% (23/30)</text>
+<text x="508.00" y="21.00" font-size="16" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">Nintendo Switch: 80.0% (24/30)</text>
 <g><title>System: 6/7</title>
 <rect x="505.00" y="30.00" width="76.84" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>System: 4 GB guest via svcMapPhysicalMemory (Done)</title></rect>
 <rect x="581.84" y="30.00" width="76.84" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>System: Heap split for Mesa and stacks (Done)</title></rect>
@@ -85,12 +85,12 @@
 <rect x="505.00" y="118.33" width="230.53" height="44.17" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>System: Heap flat over a long session (In progress)</title></rect>
 <rect x="505.00" y="30.00" width="230.53" height="132.50" fill="none" stroke="#0d1117" stroke-width="3"/>
 <text x="510.00" y="46.00" font-size="12" font-weight="normal" fill="#ffffff" text-anchor="start" stroke="#0d1117" stroke-width="3" paint-order="stroke">System</text></g>
-<g><title>Input: 4/7</title>
+<g><title>Input: 5/7</title>
 <rect x="505.00" y="162.50" width="76.84" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Input: Controller buttons and sticks (Done)</title></rect>
 <rect x="581.84" y="162.50" width="76.84" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Input: Gyro aiming (Done)</title></rect>
 <rect x="658.69" y="162.50" width="76.84" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Input: Rumble (Done)</title></rect>
 <rect x="505.00" y="206.67" width="76.84" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Input: A/B swap and Switch button names (Done)</title></rect>
-<rect x="581.84" y="206.67" width="76.84" height="44.17" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>Input: libnx controller reading on hardware (In progress)</title></rect>
+<rect x="581.84" y="206.67" width="76.84" height="44.17" fill="#2ea043" stroke="#0d1117" stroke-width="1"><title>Input: libnx controller reading on hardware (Done)</title></rect>
 <rect x="658.69" y="206.67" width="76.84" height="44.17" fill="#6e7681" stroke="#0d1117" stroke-width="1"><title>Input: Touchscreen (To do)</title></rect>
 <rect x="505.00" y="250.83" width="230.53" height="44.17" fill="#bb8009" stroke="#0d1117" stroke-width="1"><title>Input: System keyboard (Player IP) (In progress)</title></rect>
 <rect x="505.00" y="162.50" width="230.53" height="132.50" fill="none" stroke="#0d1117" stroke-width="3"/>
