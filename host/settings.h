@@ -54,6 +54,7 @@ struct Settings {
     int max_fps = 0;                 // frame limiter, 0 = off
 #endif
     int anisotropy = 16;             // anisotropic texture filtering: 1 (off), 2, 4, 8, 16
+    bool fps_counter = true;         // a small frame-rate counter in the top-right corner of each game view
     int fov = 0;                     // horizontal field of view in degrees (16:9), 0 = the game's own
     bool hd_textures = true;         // upscaled textures from hd_textures.pak, when it is there
     // Switch: Mesa runs the GL driver's work on another core (glthread). Off: this Mesa (20.1)

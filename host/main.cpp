@@ -6,6 +6,7 @@
 #include "display.h"
 #include "texpack.h"
 #include "eventlog.h"
+#include "fps_overlay.h"
 #include "framestats.h"
 #include "hooks.h"
 #include "input.h"
@@ -460,6 +461,11 @@ void boot_activity(Options &opt) {
             rt::log("peek %08x = %08x -> %08x", addr, v, v >= 0x1000 ? LD32(v) : 0);
         }
         if (opt.headless) continue;
+        if (opt.cfg.fps_counter) {
+            int fw = 0, fh = 0;
+            SDL_GetWindowSizeInPixels(g_window, &fw, &fh);
+            fps_overlay::draw(fw, fh);
+        }
         for (auto &[frame, path] : opt.screenshots)
             if (frame == sf && rt::gl_screenshot(path.c_str(), opt.width, opt.height)) rt::log("screenshot: %s", path.c_str());
         const int64_t swap_start = stats.mark();

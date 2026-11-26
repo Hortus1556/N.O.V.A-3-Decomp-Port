@@ -368,6 +368,10 @@ bool run(Settings &cfg, const std::string &config_path) {
             combo("##aniso", cfg.anisotropy, std::vector<std::pair<int, std::string>>{
                 {1, "Trilinear"}, {2, "Anisotropic 2x"}, {4, "Anisotropic 4x"}, {8, "Anisotropic 8x"}, {16, "Anisotropic 16x"}});
             if (ImGui::IsItemHovered()) ImGui::SetTooltip("Sharper textures at grazing angles (floors, walls).");
+            row("FPS counter");
+            ImGui::Checkbox("##fps", &cfg.fps_counter);
+            ImGui::SameLine();
+            ImGui::TextDisabled("top-right corner, in every player's view");
             row("HD textures");
             ImGui::BeginDisabled(!g_hd_textures_found);
             ImGui::Checkbox("##hdtex", &cfg.hd_textures);

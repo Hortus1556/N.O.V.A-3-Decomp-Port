@@ -119,6 +119,7 @@ std::string to_file(const Settings &s) {
          s.vsync == Settings::VSync::Off ? "off" : s.vsync == Settings::VSync::Adaptive ? "adaptive" : "on");
     line("max_fps = %-11d; frame limiter, 0 = unlimited", s.max_fps);
     line("anisotropy = %-8d; anisotropic texture filtering: 1 (off), 2, 4, 8, 16", s.anisotropy);
+    line("fps_counter = %-7s; a small frame-rate counter in the top-right corner (each player's view)", yes(s.fps_counter));
     line("fov = %-15d; horizontal field of view in degrees (at 16:9), 0 = the game's default", s.fov);
     line("hd_textures = %-7s; upscaled textures from nova3_data/hd_textures.pak (made by tools/texpack.py)",
          yes(s.hd_textures));
@@ -242,6 +243,7 @@ Settings load(const std::string &path) {
                                                                                     : Settings::VSync::On;
             else if (iequals(k, "max_fps")) s.max_fps = std::atoi(v.c_str());
             else if (iequals(k, "anisotropy")) s.anisotropy = std::atoi(v.c_str());
+            else if (iequals(k, "fps_counter")) s.fps_counter = parse_bool(v);
             else if (iequals(k, "fov")) s.fov = std::atoi(v.c_str());
             else if (iequals(k, "hd_textures")) s.hd_textures = parse_bool(v);
             else if (iequals(k, "glthread")) s.glthread = parse_bool(v);
