@@ -75,6 +75,8 @@ struct Settings {
 #endif
     // [gamepad]
     bool gamepad = true;
+    int controller = 0;              // 0: the first controller no other game window has; N: the Nth connected;
+                                     // -1: none (this window never takes a controller)
     float stick_deadzone = 0.2f;     // fraction of full deflection
     float look_speed = 180.0f;       // degrees per second at full right-stick deflection, sensitivity 1
     enum class Gyro { Off, Aim, Always } gyro = Gyro::Off;  // motion aiming (Switch controllers)
@@ -91,6 +93,13 @@ struct Settings {
     std::string discord_app_id;      // the Discord application whose name and icon are shown
     // [launcher]
     bool console = false;            // Windows: show the log in a console window (else nova3.log)
+    int windows = 1;                 // game windows opened together (1-8), tiled over the monitor, one controller each
+    std::string split_pads;          // each player's controller (device paths, "|"-separated; empty: the first free one)
+    std::string split_names;         // players 2-8's names in local matches ("|"-separated; player 1: nickname)
+    std::string split_screens;       // players with a window of their own: "|"-separated, "" shared, N = on monitor N
+    int split_fps = 60;              // split screen: every player's frame limit (60 or 120), the same for all
+    std::string split_audio;         // split screen: the shared window's audio output ("" default, "mute", a device name)
+    std::string split_own_audio;     // the own-screen players' audio outputs ("|"-separated, as split_audio)
     // [keys]
     std::array<std::vector<int>, kActionCount> bindings;
     std::array<std::string, kActionCount> binding_text;  // as written in the file (saved back verbatim)

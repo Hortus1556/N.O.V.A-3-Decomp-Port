@@ -1,5 +1,6 @@
 #include "launcher.h"
 
+#include "multi.h"
 #include "runtime.h"
 
 #include <SDL3/SDL.h>
@@ -218,6 +219,237 @@ void load_font() {
 
 const char *g_shot;  // --launcher-shot: PNG path; render a few frames, save, quit
 
+// Split screen: each player's controller ([launcher] pads). The launcher opens every
+// controller to tell them apart: "Assign" waits for a button on the one the player holds,
+// and each controller's player lights show the player it is assigned to.
+struct LauncherPad {
+    SDL_JoystickID id;
+    SDL_Gamepad *pad;
+    std::string path, name;
+};
+std::vector<LauncherPad> g_pads;
+int g_assigning = -1;  // the player (0-based) waiting for a button press, or -1
+
+std::string path_of(SDL_JoystickID id) {
+    const char *p = SDL_GetGamepadPathForID(id);
+    return p ? p : "";
+}
+
+// Every frame: open new controllers, drop unplugged ones, light up the assignments.
+void refresh_pads(const Settings &cfg) {
+    int n = 0;
+    SDL_JoystickID *ids = SDL_GetGamepads(&n);
+    std::vector<LauncherPad> now;
+    for (int i = 0; i < n; i++) {
+        auto it = std::find_if(g_pads.begin(), g_pads.end(), [&](const LauncherPad &p) { return p.id == ids[i]; });
+        if (it != g_pads.end()) {
+            now.push_back(*it);
+            it->pad = nullptr;  // moved
+            continue;
+        }
+        if (SDL_Gamepad *pad = SDL_OpenGamepad(ids[i])) {
+            const char *name = SDL_GetGamepadName(pad);
+            now.push_back({ids[i], pad, path_of(ids[i]), name ? name : "Controller"});
+        }
+    }
+    SDL_free(ids);
+    for (auto &p : g_pads)
+        if (p.pad) SDL_CloseGamepad(p.pad);
+    g_pads = std::move(now);
+    const std::vector<std::string> assigned = multi::split_list(cfg.split_pads);
+    for (auto &p : g_pads) {
+        int player = -1;
+        for (size_t k = 0; k < assigned.size() && k < size_t(cfg.windows); k++)
+            if (!p.path.empty() && assigned[k] == p.path) player = int(k);
+        if (SDL_GetGamepadPlayerIndex(p.pad) != player) SDL_SetGamepadPlayerIndex(p.pad, player);
+    }
+}
+
+void close_pads() {
+    for (auto &p : g_pads) SDL_CloseGamepad(p.pad);
+    g_pads.clear();
+    g_assigning = -1;
+}
+
+// Player `player` (0-based) takes the controller at `path` ("" = the first free one); no other
+// player keeps it.
+void assign(Settings &cfg, int player, const std::string &path) {
+    std::vector<std::string> list = multi::split_list(cfg.split_pads);
+    if (list.size() < size_t(player + 1)) list.resize(size_t(player + 1));
+    for (auto &p : list)
+        if (!path.empty() && p == path) p.clear();
+    list[size_t(player)] = path;
+    cfg.split_pads = multi::join_list(list);
+}
+
+// The launcher's event loop: a button on any controller while a player waits for one.
+void pad_event(Settings &cfg, const SDL_Event &e) {
+    if (e.type != SDL_EVENT_GAMEPAD_BUTTON_DOWN || g_assigning < 0) return;
+    const std::string path = path_of(e.gbutton.which);
+    if (path.empty()) return;
+    assign(cfg, g_assigning, path);
+    g_assigning = -1;
+}
+
+// Audio outputs ([launcher] shared_audio / own_audio): SDL's playback devices by name (the IDs
+// differ between processes), refreshed about once a second.
+const std::vector<std::string> &audio_devices() {
+    static std::vector<std::string> names;
+    static uint64_t next = 0;
+    if (SDL_GetTicks() >= next) {
+        next = SDL_GetTicks() + 1000;
+        names.clear();
+        int n = 0;
+        if (SDL_AudioDeviceID *ids = SDL_GetAudioPlaybackDevices(&n)) {
+            for (int i = 0; i < n; i++)
+                if (const char *name = SDL_GetAudioDeviceName(ids[i])) names.push_back(name);
+            SDL_free(ids);
+        }
+    }
+    return names;
+}
+
+// "" = Windows' default output, "mute" = no sound, else a device name.
+void audio_combo(const char *id, std::string &value) {
+    auto label = [](const std::string &v) -> std::string {
+        if (v.empty()) return "Default output";
+        if (v == "mute") return "Muted";
+        const auto &list = audio_devices();
+        return std::find(list.begin(), list.end(), v) != list.end() ? v : v + " (not connected)";
+    };
+    if (ImGui::BeginCombo(id, label(value).c_str())) {
+        if (ImGui::Selectable("Default output", value.empty())) value.clear();
+        if (ImGui::Selectable("Muted", value == "mute")) value = "mute";
+        for (const std::string &name : audio_devices())
+            if (ImGui::Selectable(name.c_str(), value == name)) value = name;
+        ImGui::EndCombo();
+    }
+}
+
+// The Players section (split screen): per player a name, a controller (Auto, Keyboard & mouse
+// or a connected one, or "Assign" and a button on it) and optionally a screen of their own,
+// with its monitor and audio output.
+void player_table(Settings &cfg, const std::vector<Display> &displays) {
+    refresh_pads(cfg);
+    const std::vector<std::string> assigned = multi::split_list(cfg.split_pads);
+    auto label = [&](const std::string &path) -> std::string {
+        if (path.empty()) return "Auto (first free controller)";
+        if (path == "kbm") return "Keyboard & mouse";  // one player: the keyboard and mouse, no controller
+        for (size_t i = 0; i < g_pads.size(); i++)
+            if (g_pads[i].path == path) return std::to_string(i + 1) + ": " + g_pads[i].name;
+        return "(not connected)";
+    };
+    // each player's name in local matches: player 1's is [multiplayer] nickname, the others'
+    // [launcher] names (index k for player k + 1)
+    static char names[8][17];
+    static bool names_loaded = false;
+    if (!names_loaded) {
+        const std::vector<std::string> list = multi::split_list(cfg.split_names);
+        for (size_t k = 1; k < 8; k++) std::snprintf(names[k], sizeof names[k], "%s", k < list.size() ? list[k].c_str() : "");
+        names_loaded = true;
+    }
+    std::snprintf(names[0], sizeof names[0], "%s", cfg.nickname.c_str());  // also the Nickname field's
+    auto name_filter = [](ImGuiInputTextCallbackData *d) {  // as the Nickname field, and no "|"
+        const ImWchar c = d->EventChar;
+        return (c >= 32 && c < 127 && c != ';' && c != '[' && c != ']' && c != '|') ? 0 : 1;
+    };
+
+    const float font = ImGui::GetFontSize();
+    const float button_w = ImGui::CalcTextSize("Press a button...").x + ImGui::GetStyle().FramePadding.x * 2;
+    if (!ImGui::BeginTable("players", 4, ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_RowBg |
+                                             ImGuiTableFlags_PadOuterX))
+        return;
+    ImGui::TableSetupColumn("player", ImGuiTableColumnFlags_WidthFixed, font * 4.5f);
+    ImGui::TableSetupColumn("name", ImGuiTableColumnFlags_WidthFixed, font * 9);
+    ImGui::TableSetupColumn("controller", ImGuiTableColumnFlags_WidthStretch);
+    ImGui::TableSetupColumn("assign", ImGuiTableColumnFlags_WidthFixed, button_w);
+    auto cell = [](int column) {
+        ImGui::TableSetColumnIndex(column);
+        ImGui::SetNextItemWidth(-FLT_MIN);
+    };
+    for (int k = 0; k < cfg.windows; k++) {
+        ImGui::PushID(k);
+        const std::string mine = size_t(k) < assigned.size() ? assigned[size_t(k)] : "";
+
+        // name, controller, Assign
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::AlignTextToFramePadding();
+        ImGui::Text("Player %d", k + 1);
+        cell(1);
+        const std::string hint = "Name " + std::to_string(k + 1);
+        if (ImGui::InputTextWithHint("##name", hint.c_str(), names[k], sizeof names[k],
+                                     ImGuiInputTextFlags_CallbackCharFilter, name_filter)) {
+            if (k == 0) {
+                cfg.nickname = names[0];
+            } else {
+                std::vector<std::string> list = multi::split_list(cfg.split_names);
+                if (list.size() < size_t(k + 1)) list.resize(size_t(k + 1));
+                list[size_t(k)] = names[k];
+                cfg.split_names = multi::join_list(list);
+            }
+        }
+        if (ImGui::IsItemHovered()) ImGui::SetTooltip("This player's name in local multiplayer matches");
+        cell(2);
+        if (ImGui::BeginCombo("##pad", label(mine).c_str())) {
+            if (ImGui::Selectable(label("").c_str(), mine.empty())) assign(cfg, k, "");
+            if (ImGui::Selectable(label("kbm").c_str(), mine == "kbm")) assign(cfg, k, "kbm");  // taken from any other player
+            for (size_t i = 0; i < g_pads.size(); i++)
+                if (!g_pads[i].path.empty() && ImGui::Selectable(label(g_pads[i].path).c_str(), mine == g_pads[i].path))
+                    assign(cfg, k, g_pads[i].path);
+            ImGui::EndCombo();
+        }
+        cell(3);
+        if (g_assigning == k) {
+            if (ImGui::Button("Press a button...", ImVec2(-FLT_MIN, 0))) g_assigning = -1;  // click again: cancel
+        } else if (ImGui::Button("Assign", ImVec2(-FLT_MIN, 0))) {
+            g_assigning = k;
+        }
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("Then press any button on the controller this player will use.\n"
+                              "Its player lights show the number.");
+
+        // a window of their own instead of a view in the shared one: monitor and audio output
+        std::vector<std::string> screens = multi::split_list(cfg.split_screens);
+        if (screens.size() < size_t(k + 1)) screens.resize(size_t(k + 1));
+        std::string &screen = screens[size_t(k)];
+        bool own = !screen.empty();
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(1);
+        if (ImGui::Checkbox("Own screen", &own)) {
+            // the first monitor other than the shared window's, if there is one
+            screen = own ? std::to_string(displays.size() > 1 && cfg.display == 0 ? 1 : 0) : "";
+            cfg.split_screens = multi::join_list(screens);
+        }
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("A window of their own (display mode, resolution and frame limit as set under\n"
+                              "Display) instead of a part of the shared split-screen window.");
+        if (own) {
+            cell(2);
+            int monitor = std::clamp(std::atoi(screen.c_str()), 0, std::max(0, int(displays.size()) - 1));
+            std::vector<std::pair<int, std::string>> items;
+            for (size_t i = 0; i < displays.size(); i++)
+                items.push_back({int(i), "Monitor " + std::to_string(i + 1) + ": " + displays[i].name});
+            if (combo("##screen", monitor, items)) {
+                screen = std::to_string(monitor);
+                cfg.split_screens = multi::join_list(screens);
+            }
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(1);
+            ImGui::AlignTextToFramePadding();
+            ImGui::TextDisabled("Audio output");
+            cell(2);
+            std::vector<std::string> audio = multi::split_list(cfg.split_own_audio);
+            if (audio.size() < size_t(k + 1)) audio.resize(size_t(k + 1));
+            const std::string before = audio[size_t(k)];
+            audio_combo("##audio", audio[size_t(k)]);
+            if (audio[size_t(k)] != before) cfg.split_own_audio = multi::join_list(audio);
+        }
+        ImGui::PopID();
+    }
+    ImGui::EndTable();
+}
+
 }  // namespace
 
 void set_hd_textures_found(bool found) { g_hd_textures_found = found; }
@@ -272,6 +504,7 @@ bool run(Settings &cfg, const std::string &config_path) {
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
             ImGui_ImplSDL3_ProcessEvent(&e);
+            pad_event(cfg, e);  // split screen: a controller button for "Assign"
             if (e.type == SDL_EVENT_QUIT || e.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED) result = 0;
         }
         if (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED) {
@@ -305,6 +538,28 @@ bool run(Settings &cfg, const std::string &config_path) {
                 for (size_t i = 0; i < displays.size(); i++)
                     items.push_back({int(i), std::to_string(i + 1) + ": " + displays[i].name});
                 combo("##monitor", cfg.display, items);
+            }
+            if (multi::slot() == 1) {
+                // several players on one PC (host/multi.cpp): one window split into a view each
+                row("Players");
+                combo("##windows", cfg.windows, {{1, "1 (no split screen)"}, {2, "2"}, {3, "3"}, {4, "4"},
+                                                 {5, "5"}, {6, "6"}, {7, "7"}, {8, "8"}});
+                if (cfg.windows > 1) {
+                    ImGui::SameLine();
+                    ImGui::TextDisabled("split screen: set each player under Players");
+                    // every player at the same frame rate (each is its own copy of the game)
+                    row("Frame limit (shared)");
+                    combo("##splitfps", cfg.split_fps, {{60, "60 fps"}, {120, "120 fps"}});
+                    if (ImGui::IsItemHovered())
+                        ImGui::SetTooltip("The frame limit of every player in the shared window, the same for all.\n"
+                                          "Players on their own screen keep the Frame limit below instead.\n"
+                                          "Each player is a full copy of the game: 60 is easier on the PC.");
+                    row("Audio (shared)");
+                    audio_combo("##sharedaudio", cfg.split_audio);
+                    if (ImGui::IsItemHovered())
+                        ImGui::SetTooltip("Where the shared split-screen window's players are heard.\n"
+                                          "Players on their own screen have their own, under Players.");
+                }
             }
             row("Mode");
             combo<DisplayMode>("##mode", cfg.mode, {{DisplayMode::Windowed, "Windowed"},
@@ -368,6 +623,11 @@ bool run(Settings &cfg, const std::string &config_path) {
             ImGui::EndTable();
         }
 
+        if (multi::slot() == 1 && cfg.windows > 1) {
+            ImGui::SeparatorText("Players");
+            player_table(cfg, displays);
+        }
+
         ImGui::SeparatorText("Graphics");
         if (begin_rows("graphics")) {
             row("Texture filtering");
@@ -419,8 +679,23 @@ bool run(Settings &cfg, const std::string &config_path) {
                 int n = 0;
                 SDL_JoystickID *pads = SDL_GetGamepads(&n);
                 ImGui::SameLine();
-                if (n > 0) ImGui::TextDisabled("%s", SDL_GetGamepadNameForID(pads[0]) ? SDL_GetGamepadNameForID(pads[0]) : "controller connected");
+                if (n > 1) ImGui::TextDisabled("%d controllers connected", n);
+                else if (n > 0) ImGui::TextDisabled("%s", SDL_GetGamepadNameForID(pads[0]) ? SDL_GetGamepadNameForID(pads[0]) : "controller connected");
                 else ImGui::TextDisabled("no controller connected");
+                if (cfg.gamepad) {
+                    // several game windows: which controller this one plays with (host/multi.cpp)
+                    row("Controller");
+                    auto label = [&](int i) {
+                        if (i == 0) return std::string("Auto (first one no other window has)");
+                        const char *name = i <= n ? SDL_GetGamepadNameForID(pads[i - 1]) : nullptr;
+                        return std::to_string(i) + ": " + (name ? name : i <= n ? "controller" : "not connected");
+                    };
+                    if (ImGui::BeginCombo("##controller", label(cfg.controller).c_str())) {
+                        for (int i = 0; i <= std::max(n, cfg.controller); i++)
+                            if (ImGui::Selectable(label(i).c_str(), cfg.controller == i)) cfg.controller = i;
+                        ImGui::EndCombo();
+                    }
+                }
                 SDL_free(pads);
             }
             if (cfg.gamepad) {
@@ -470,12 +745,19 @@ bool run(Settings &cfg, const std::string &config_path) {
                 const ImWchar c = d->EventChar;
                 return (c >= 32 && c < 127 && c != ';' && c != '[' && c != ']') ? 0 : 1;
             };
-            ImGui::SetNextItemWidth(260);
-            if (ImGui::InputTextWithHint("##nick", "the game's default", nick, sizeof nick,
-                                         ImGuiInputTextFlags_CallbackCharFilter, filter))
-                cfg.nickname = nick;
-            ImGui::SameLine();
-            ImGui::TextDisabled("shown to other players on local Wi-Fi");
+            if (cfg.windows > 1 && multi::slot() == 1) {
+                // split screen: each player's name is in their row under Display
+                ImGui::AlignTextToFramePadding();
+                ImGui::TextDisabled("set for each player under Display (Player 1 ... %d)", cfg.windows);
+                std::snprintf(nick, sizeof nick, "%s", cfg.nickname.c_str());  // in step with Player 1's name
+            } else {
+                ImGui::SetNextItemWidth(260);
+                if (ImGui::InputTextWithHint("##nick", "the game's default", nick, sizeof nick,
+                                             ImGuiInputTextFlags_CallbackCharFilter, filter))
+                    cfg.nickname = nick;
+                ImGui::SameLine();
+                ImGui::TextDisabled("shown to other players on local Wi-Fi");
+            }
             row("Players' IPs");
             static char peers[128];
             static bool peers_loaded = false;
@@ -588,6 +870,7 @@ bool run(Settings &cfg, const std::string &config_path) {
     ImGui_ImplSDLRenderer3_Shutdown();
     ImGui_ImplSDL3_Shutdown();
     ImGui::DestroyContext();
+    close_pads();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     if (result != 1) return false;
