@@ -5,6 +5,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 
 namespace audio {
 
@@ -14,6 +15,11 @@ void register_java();
 void select_backend();
 // Master volume, 0..1 (applies to current and future output streams).
 void set_volume(float gain);
+#if !defined(__SWITCH__) && !defined(__3DS__) && !defined(__GAMECUBE__)
+// Before the game opens its sound: the playback device to use, by name ("": the system's
+// default output; not connected: the default too). Split screen: [launcher] shared_audio / own_audio.
+void set_output_device(const std::string &name);
+#endif
 #ifdef __3DS__
 // Before the process ends: CSND's channels (the output without the DSP firmware) would go on
 // looping their last sound.
