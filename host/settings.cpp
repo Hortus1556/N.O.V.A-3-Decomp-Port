@@ -119,6 +119,7 @@ std::string to_file(const Settings &s) {
          s.vsync == Settings::VSync::Off ? "off" : s.vsync == Settings::VSync::Adaptive ? "adaptive" : "on");
     line("max_fps = %-11d; frame limiter, 0 = unlimited", s.max_fps);
     line("anisotropy = %-8d; anisotropic texture filtering: 1 (off), 2, 4, 8, 16", s.anisotropy);
+    line("fps_counter = %-7s; a small frame-rate counter in the top-right corner (each player's view)", yes(s.fps_counter));
     line("fov = %-15d; horizontal field of view in degrees (at 16:9), 0 = the game's default", s.fov);
     line("hd_textures = %-7s; upscaled textures from nova3_data/hd_textures.pak (made by tools/texpack.py)",
          yes(s.hd_textures));
@@ -138,6 +139,9 @@ std::string to_file(const Settings &s) {
          yes(s.toggle_sprint));
     out += "\n[gamepad]\n";
     line("enabled = %-11s; Xbox, PlayStation, Switch and other controllers (through SDL)", yes(s.gamepad));
+    if (s.controller > 0) line("controller = %-8d; which controller this window uses: auto (the first one no other game window has), 1-16, or none", s.controller);
+    else line(s.controller < 0 ? "controller = none    ; which controller this window uses: auto (the first one no other game window has), 1-16, or none"
+                               : "controller = auto    ; which controller this window uses: auto (the first one no other game window has), 1-16, or none");
     line("deadzone = %-10g; stick dead zone, fraction of full deflection", double(s.stick_deadzone));
     line("look_speed = %-8g; degrees per second at full right-stick deflection, at sensitivity 1",
          double(s.look_speed));
@@ -162,6 +166,13 @@ std::string to_file(const Settings &s) {
          s.discord_app_id.c_str());
     out += "\n[launcher]\n";
     line("console = %-11s; Windows: show the log in a console window (otherwise it goes to nova3.log)", yes(s.console));
+    line("windows = %-11d; players on this PC (1-8): one window split into a view per player, one controller each", s.windows);
+    line("split_fps = %-9d; split screen: every player's frame limit, the same for all (60 or 120)", s.split_fps);
+    if (!s.split_pads.empty()) out += "pads = " + s.split_pads + " ; each player's controller (set in the launcher)\n";
+    if (!s.split_names.empty()) out += "names = " + s.split_names + " ; each player's name (player 1: [multiplayer] nickname)\n";
+    if (!s.split_screens.empty()) out += "screens = " + s.split_screens + " ; players with a window of their own: the monitor number (0 = first), empty = the shared window\n";
+    if (!s.split_audio.empty()) out += "shared_audio = " + s.split_audio + " ; the shared window's audio output (mute = none)\n";
+    if (!s.split_own_audio.empty()) out += "own_audio = " + s.split_own_audio + " ; each own-screen player's audio output\n";
     out += "\n[keys]\n";
     out += "; Gameplay bindings: comma-separated lists of physical keys (named as on a US layout):\n";
     out += "; letters, digits, F1-F24, Space, Enter, Tab, Escape, Backspace, Shift, Ctrl, Alt, CapsLock,\n";
@@ -242,6 +253,7 @@ Settings load(const std::string &path) {
                                                                                     : Settings::VSync::On;
             else if (iequals(k, "max_fps")) s.max_fps = std::atoi(v.c_str());
             else if (iequals(k, "anisotropy")) s.anisotropy = std::atoi(v.c_str());
+            else if (iequals(k, "fps_counter")) s.fps_counter = parse_bool(v);
             else if (iequals(k, "fov")) s.fov = std::atoi(v.c_str());
             else if (iequals(k, "hd_textures")) s.hd_textures = parse_bool(v);
             else if (iequals(k, "glthread")) s.glthread = parse_bool(v);
@@ -257,6 +269,7 @@ Settings load(const std::string &path) {
             else known = false;
         } else if (iequals(section, "gamepad")) {
             if (iequals(k, "enabled")) s.gamepad = parse_bool(v);
+            else if (iequals(k, "controller")) s.controller = iequals(v, "auto") ? 0 : iequals(v, "none") ? -1 : std::clamp(std::atoi(v.c_str()), 0, 16);
             else if (iequals(k, "deadzone")) s.stick_deadzone = float(std::atof(v.c_str()));
             else if (iequals(k, "look_speed")) s.look_speed = float(std::atof(v.c_str()));
             else if (iequals(k, "gyro")) s.gyro = iequals(v, "always") ? Settings::Gyro::Always
@@ -286,6 +299,13 @@ Settings load(const std::string &path) {
             } else known = false;
         } else if (iequals(section, "launcher")) {
             if (iequals(k, "console")) s.console = parse_bool(v);
+            else if (iequals(k, "windows")) s.windows = std::clamp(std::atoi(v.c_str()), 1, 8);
+            else if (iequals(k, "pads")) s.split_pads = v;
+            else if (iequals(k, "names")) s.split_names = v;
+            else if (iequals(k, "screens")) s.split_screens = v;
+            else if (iequals(k, "split_fps")) s.split_fps = std::atoi(v.c_str()) >= 120 ? 120 : 60;
+            else if (iequals(k, "shared_audio")) s.split_audio = v;
+            else if (iequals(k, "own_audio")) s.split_own_audio = v;
             else known = false;
         } else if (iequals(section, "keys")) {
             known = false;

@@ -25,6 +25,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <mutex>
+#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -443,9 +444,29 @@ void SDLCALL on_get(void *, SDL_AudioStream *, int additional, int) {
         g_underrun_bytes.fetch_add(additional, std::memory_order_relaxed);
     }
 }
+// set_output_device: a playback device by name ("": the system's default output). Looked up at
+// every open, since device IDs change when devices come and go.
+std::string g_device_name;
+SDL_AudioDeviceID output_device() {
+    if (g_device_name.empty()) return SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK;
+    SDL_AudioDeviceID found = SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK;
+    int n = 0;
+    if (SDL_AudioDeviceID *ids = SDL_GetAudioPlaybackDevices(&n)) {
+        for (int i = 0; i < n; i++)
+            if (const char *name = SDL_GetAudioDeviceName(ids[i]); name && g_device_name == name) found = ids[i];
+        SDL_free(ids);
+    }
+    static bool logged = false;
+    if (!logged) {
+        logged = true;
+        rt::log("audio: output %s%s", g_device_name.c_str(),
+                found == SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK ? " (not connected: the default output)" : "");
+    }
+    return found;
+}
 Output *out_open(int rate, int channels, bool pcm8) {
     SDL_AudioSpec spec{pcm8 ? SDL_AUDIO_U8 : SDL_AUDIO_S16LE, channels, rate};
-    return SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, on_get, nullptr);
+    return SDL_OpenAudioDeviceStream(output_device(), &spec, on_get, nullptr);
 }
 int out_queued(Output *o) { return SDL_GetAudioStreamQueued(o); }
 void out_put(Output *o, const uint8_t *data, int bytes) { SDL_PutAudioStreamData(o, data, bytes); }
@@ -457,7 +478,7 @@ void out_gain(Output *o, float gain) { SDL_SetAudioStreamGain(o, gain); }
 int native_rate() {
     SDL_AudioSpec spec{};
     int frames = 0;
-    return SDL_GetAudioDeviceFormat(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, &frames) && spec.freq > 0 ? spec.freq : 44100;
+    return SDL_GetAudioDeviceFormat(output_device(), &spec, &frames) && spec.freq > 0 ? spec.freq : 44100;
 }
 constexpr int kQueueMs = 96;
 #endif
@@ -696,6 +717,10 @@ void register_java() {
     jni::register_method(cls + "write([BII)I", write);
     jni::register_method(cls + "write([SII)I", write);
 }
+
+#if !defined(__SWITCH__) && !defined(__3DS__) && !defined(__GAMECUBE__)
+void set_output_device(const std::string &name) { g_device_name = name; }
+#endif
 
 void set_volume(float gain) {
     std::lock_guard<std::mutex> lock(g_lock);

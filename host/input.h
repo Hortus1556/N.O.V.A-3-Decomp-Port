@@ -64,6 +64,14 @@ void set_scripted(bool on);
 // Main thread: the window, then every SDL event.
 void set_window(SDL_Window *window);
 void handle_event(const SDL_Event &e);
+// Split screen ([launcher] pads, host/multi.cpp): each player's controller path ("" = the
+// first free one); `player` is this window's (1-based). Call before set_window.
+void set_split_pads(const std::vector<std::string> &pads, int player);
+// Split screen: whether this player's view has the keyboard focus (the SDL focus events of a
+// child window are not reliable); from then on only this call changes it.
+void set_external_focus(bool focused);
+// Split screen: this player's view (its child window), for mouse look without SDL's relative mode.
+void set_view(void *view);
 #else
 // Consoles: the game's screen size, for the touchscreen (touches come in 1280x720 coordinates
 // on the Switch, 320x240 on the 3DS's bottom screen). Controllers and the touchscreen are read

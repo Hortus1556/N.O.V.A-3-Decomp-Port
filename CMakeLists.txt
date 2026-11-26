@@ -239,7 +239,7 @@ add_library(imgui STATIC ${IMGUI_DIR}/imgui.cpp ${IMGUI_DIR}/imgui_draw.cpp ${IM
 target_include_directories(imgui PUBLIC ${IMGUI_DIR})
 target_link_libraries(imgui PUBLIC SDL3::SDL3)
 
-add_executable(nova3 host/main.cpp host/input.cpp host/hooks.cpp host/settings.cpp host/launcher.cpp host/audio.cpp host/eventlog.cpp host/offline.cpp host/prompts.cpp host/controls_menu.cpp host/discord.cpp host/texpack.cpp host/native_hot.cpp)
+add_executable(nova3 host/main.cpp host/input.cpp host/hooks.cpp host/settings.cpp host/launcher.cpp host/audio.cpp host/eventlog.cpp host/offline.cpp host/prompts.cpp host/controls_menu.cpp host/discord.cpp host/texpack.cpp host/native_hot.cpp host/multi.cpp host/fps_overlay.cpp)
 target_link_libraries(nova3 PRIVATE nova3_core SDL3::SDL3 imgui)
 if(WIN32)
     # A GUI program (no console window); the log goes to nova3.log or an optional console.

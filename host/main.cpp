@@ -6,9 +6,11 @@
 #include "display.h"
 #include "texpack.h"
 #include "eventlog.h"
+#include "fps_overlay.h"
 #include "framestats.h"
 #include "hooks.h"
 #include "input.h"
+#include "multi.h"
 #include "jni.h"
 #include "launcher.h"
 #include "os.h"
@@ -47,6 +49,19 @@ struct Options {
     std::string config;    // --config: the settings file (default: <user_dir>/nova3.ini)
     bool size_given = false;  // --size: windowed at that size, whatever the settings say
     bool silent = false;      // -silent: no launcher
+    int split = 0;            // --split N[:monitor]: one of N game windows tiled over the monitor (host/multi.cpp)
+    int split_display = -1;   // the monitor for --split (-1: [video] display)
+    unsigned long long container = 0;  // --split N:monitor:hwnd: the split screen's window (player 1's)
+    std::string pads;         // --pads: each player's controller ([launcher] pads)
+    std::string names;        // --names: players 2-8's names ([launcher] names; index k for player k + 1)
+    std::string screens;      // --screens: players with a window of their own ([launcher] screens)
+    int split_fps = 0;        // --fps: split screen: every player's frame limit ([launcher] split_fps)
+    int own_fps = -1;         // --own-fps: split screen, a window of its own: player 1's [video] max_fps
+    int player = 0;           // --player: split screen: this window's player number, from player 1
+    std::string shared_audio; // --shared-audio: the shared window's audio output ([launcher] shared_audio)
+    std::string own_audio;    // --own-audio: the own-screen players' outputs ([launcher] own_audio)
+    int own_monitor = -1;     // split screen: this player's own window is on this monitor (-1: a view)
+    int shared_count = 0, shared_index = 0;  // the players in the shared window, and this one's place (1-based)
     std::string launcher_shot;  // --launcher-shot file.png (debug): render the launcher and exit
     int width = 1280, height = 720;
     settings::Settings cfg;
@@ -213,6 +228,18 @@ Options parse(int argc, char **argv) {
         // absolute: the working directory changes to the game files' folder (find_game_files)
         else if (k == "--config") o.config = std::filesystem::absolute(v).string();
         else if (k == "--user") o.user_dir = std::filesystem::absolute(v).string();
+        else if (k == "--pads") o.pads = v;
+        else if (k == "--names") o.names = v;
+        else if (k == "--screens") o.screens = v;
+        else if (k == "--fps") o.split_fps = std::atoi(v.c_str());
+        else if (k == "--own-fps") o.own_fps = std::atoi(v.c_str());
+        else if (k == "--player") o.player = std::atoi(v.c_str());
+        else if (k == "--shared-audio") o.shared_audio = v;
+        else if (k == "--own-audio") o.own_audio = v;
+        else if (k == "--split") {
+            if (std::sscanf(v.c_str(), "%d:%d:%llx", &o.split, &o.split_display, &o.container) < 1) o.split = 0;
+            o.split = std::clamp(o.split, 0, 8);
+        }
         else if (k == "--launcher-shot") o.launcher_shot = v;
         else { std::fprintf(stderr, "unknown option %s\n", k.c_str()); std::exit(2); }
     }
@@ -290,6 +317,8 @@ float fov_scale(int fov) {
     return float(v / 0.60238);
 }
 
+bool g_embedded;  // split screen: this player's view is a child of player 1's window (fixed size)
+
 // Main thread: the window per display mode and size (exclusive: the closest mode).
 struct WindowRequest {
     settings::DisplayMode mode;
@@ -298,6 +327,7 @@ struct WindowRequest {
 void SDLCALL change_window(void *param) {
     const WindowRequest r = *static_cast<WindowRequest *>(param);
     delete static_cast<WindowRequest *>(param);
+    if (g_embedded) return;  // a split-screen view keeps its place in the shared window
     using settings::DisplayMode;
     SDL_DisplayID display = SDL_GetDisplayForWindow(g_window);
     if (r.mode == DisplayMode::Windowed) {
@@ -460,6 +490,11 @@ void boot_activity(Options &opt) {
             rt::log("peek %08x = %08x -> %08x", addr, v, v >= 0x1000 ? LD32(v) : 0);
         }
         if (opt.headless) continue;
+        if (opt.cfg.fps_counter) {
+            int fw = 0, fh = 0;
+            SDL_GetWindowSizeInPixels(g_window, &fw, &fh);
+            fps_overlay::draw(fw, fh);
+        }
         for (auto &[frame, path] : opt.screenshots)
             if (frame == sf && rt::gl_screenshot(path.c_str(), opt.width, opt.height)) rt::log("screenshot: %s", path.c_str());
         const int64_t swap_start = stats.mark();
@@ -566,6 +601,100 @@ void use_angle() {
 // resolution, or exclusive fullscreen (closest display mode to width x height @ refresh), on
 // the chosen monitor; with a GLES 2 context that the game thread makes current. Tests
 // (scripted / --size) always get a plain window of the requested size.
+// [launcher] windows = N: start N - 1 more nova3.exe, straight into the game, each taking the
+// next player slot, its own controller and its tile (create_window). No inherited output: each
+// writes its own log (nova3-playerN.log).
+void open_other_windows(const Options &opt) {
+    const char *base = SDL_GetBasePath();
+#ifdef _WIN32
+    const std::string exe = std::string(base ? base : "") + "nova3.exe";
+#else
+    const std::string exe = std::string(base ? base : "") + "nova3";
+#endif
+    char split[64];
+    std::snprintf(split, sizeof split, "%d:%d:%llx", opt.split, opt.split_display, opt.container);
+    const std::string fps = std::to_string(opt.split_fps), own_fps = std::to_string(opt.cfg.max_fps);
+    for (int i = 1; i < opt.split; i++) {
+        const std::string player = std::to_string(i + 1);  // each window its player number, whatever slots are free
+        const char *args[] = {exe.c_str(), "-silent", "--player", player.c_str(), "--split", split, "--fps", fps.c_str(),
+                              "--own-fps", own_fps.c_str(),
+                              "--pads", opt.pads.c_str(),
+                              "--names", opt.names.c_str(), "--screens", opt.screens.c_str(),
+                              "--shared-audio", opt.shared_audio.c_str(), "--own-audio", opt.own_audio.c_str(), nullptr};
+        SDL_PropertiesID props = SDL_CreateProperties();
+        SDL_SetPointerProperty(props, SDL_PROP_PROCESS_CREATE_ARGS_POINTER, (void *)args);
+        SDL_SetNumberProperty(props, SDL_PROP_PROCESS_CREATE_STDIN_NUMBER, SDL_PROCESS_STDIO_NULL);
+        SDL_SetNumberProperty(props, SDL_PROP_PROCESS_CREATE_STDOUT_NUMBER, SDL_PROCESS_STDIO_NULL);
+        SDL_SetNumberProperty(props, SDL_PROP_PROCESS_CREATE_STDERR_NUMBER, SDL_PROCESS_STDIO_NULL);
+        SDL_Process *p = SDL_CreateProcessWithProperties(props);
+        SDL_DestroyProperties(props);
+        if (p) SDL_DestroyProcess(p);  // only the handle: the window keeps running
+        else rt::log("cannot open game window %d: %s", i + 1, SDL_GetError());
+    }
+    rt::log("split: %d players", opt.split);
+}
+
+// Split screen: who shares the window and who has one of their own ([launcher] screens).
+void split_layout(Options &opt) {
+    const std::vector<std::string> screens = multi::split_list(opt.screens);
+    auto own = [&](int player) { return size_t(player) <= screens.size() && !screens[size_t(player - 1)].empty(); };
+    opt.shared_count = opt.shared_index = 0;
+    for (int p = 1; p <= opt.split; p++) {
+        if (own(p)) continue;
+        opt.shared_count++;
+        if (p == multi::slot()) opt.shared_index = opt.shared_count;
+    }
+    opt.own_monitor = own(multi::slot()) ? std::max(0, std::atoi(screens[size_t(multi::slot() - 1)].c_str())) : -1;
+}
+
+// Split screen: player 1's one window, split into a view per player (every player's game
+// window becomes a child of it: host/multi.cpp). Windowed: a normal window at the resolution;
+// borderless or fullscreen: the whole monitor, over the taskbar.
+SDL_Window *g_container;
+void create_container(Options &opt) {
+    using settings::DisplayMode;
+    const settings::Settings &cfg = opt.cfg;
+    int count = 0;
+    SDL_DisplayID *ids = SDL_GetDisplays(&count);
+    SDL_DisplayID display = ids && count ? ids[std::clamp(cfg.display, 0, count - 1)] : SDL_GetPrimaryDisplay();
+    SDL_free(ids);
+    const bool windowed = cfg.mode == DisplayMode::Windowed;
+    SDL_Rect r{0, 0, cfg.width, cfg.height};
+    if (!windowed) SDL_GetDisplayBounds(display, &r);
+    SDL_PropertiesID props = SDL_CreateProperties();
+    SDL_SetStringProperty(props, SDL_PROP_WINDOW_CREATE_TITLE_STRING, "N.O.V.A. 3");
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_X_NUMBER, SDL_WINDOWPOS_CENTERED_DISPLAY(display));
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_Y_NUMBER, SDL_WINDOWPOS_CENTERED_DISPLAY(display));
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, r.w);
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, r.h);
+    SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_HIDDEN_BOOLEAN, true);
+    if (!windowed) SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_BORDERLESS_BOOLEAN, true);
+    SDL_SetHint(SDL_HINT_WINDOWS_ERASE_BACKGROUND_MODE, "always");  // black around the letterboxed views
+    g_container = SDL_CreateWindowWithProperties(props);
+    SDL_DestroyProperties(props);
+    if (!g_container) {
+        rt::log("split screen window: %s; separate windows instead", SDL_GetError());
+        return;
+    }
+    if (!windowed) SDL_SetWindowFullscreen(g_container, true);  // the desktop's size: covers the taskbar
+    SDL_ShowWindow(g_container);
+    SDL_SyncWindow(g_container);
+#ifdef _WIN32
+    opt.container = (unsigned long long)(uintptr_t)SDL_GetPointerProperty(SDL_GetWindowProperties(g_container),
+                                                                           SDL_PROP_WINDOW_WIN32_HWND_POINTER, nullptr);
+#endif
+    rt::log("split screen: %d players in one %s window", opt.split, windowed ? "windowed" : "fullscreen");
+}
+
+void *window_hwnd(SDL_Window *w) {
+#ifdef _WIN32
+    return w ? SDL_GetPointerProperty(SDL_GetWindowProperties(w), SDL_PROP_WINDOW_WIN32_HWND_POINTER, nullptr) : nullptr;
+#else
+    (void)w;
+    return nullptr;
+#endif
+}
+
 void create_window(Options &opt) {
 #ifdef _WIN32
     use_angle();
@@ -582,16 +711,42 @@ void create_window(Options &opt) {
     using settings::DisplayMode;
     const settings::Settings &cfg = opt.cfg;
     const bool test = (opt.scripted && !opt.play) || opt.size_given;
-    const DisplayMode mode = test ? DisplayMode::Windowed : cfg.mode;
+    const bool own = opt.split > 1 && opt.own_monitor >= 0;  // split screen, but a window of its own
+    const bool split = opt.split > 1 && !own;  // a view of the split screen: placed in the shared window
+    const DisplayMode mode = test || split ? DisplayMode::Windowed : cfg.mode;
     int count = 0;
     SDL_DisplayID *ids = SDL_GetDisplays(&count);
-    SDL_DisplayID display = ids && count ? ids[std::clamp(cfg.display, 0, count - 1)] : SDL_GetPrimaryDisplay();
+    const int want = own ? opt.own_monitor : split && opt.split_display >= 0 ? opt.split_display : cfg.display;
+    SDL_DisplayID display = ids && count ? ids[std::clamp(want, 0, count - 1)] : SDL_GetPrimaryDisplay();
     SDL_free(ids);
+    int x = SDL_WINDOWPOS_CENTERED_DISPLAY(display), y = SDL_WINDOWPOS_CENTERED_DISPLAY(display);
+    void *container = split && opt.container ? (void *)(uintptr_t)opt.container : nullptr;
+    if (container && multi::window_alive(container)) {
+        // this player's view of the split screen's window: placed and shown by multi::embed
+        multi::tile_rect(container, opt.shared_count, opt.shared_index, x, y, opt.width, opt.height);
+        rt::log("view: player %d, view %d of %d in the shared window (%dx%d at %d,%d)", multi::slot(), opt.shared_index,
+                opt.shared_count, opt.width, opt.height, x, y);
+    } else if (split) {
+        container = nullptr;
+        // the monitor's usable area (without the taskbar) in equal tiles; player k takes tile k
+        SDL_Rect r{};
+        if (!SDL_GetDisplayUsableBounds(display, &r)) SDL_GetDisplayBounds(display, &r);
+        int cols, rows;
+        multi::grid(opt.split, cols, rows);
+        const int tile = (multi::slot() - 1) % (cols * rows);
+        opt.width = r.w / cols;
+        opt.height = r.h / rows;
+        x = r.x + (tile % cols) * opt.width;
+        y = r.y + (tile / cols) * opt.height;
+        rt::log("window: tile %d of %d (%dx%d at %d,%d)", tile + 1, opt.split, opt.width, opt.height, x, y);
+    }
 
     SDL_PropertiesID props = SDL_CreateProperties();
-    SDL_SetStringProperty(props, SDL_PROP_WINDOW_CREATE_TITLE_STRING, "N.O.V.A. 3");
-    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_X_NUMBER, SDL_WINDOWPOS_CENTERED_DISPLAY(display));
-    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_Y_NUMBER, SDL_WINDOWPOS_CENTERED_DISPLAY(display));
+    const std::string title = multi::slot() > 1 ? "N.O.V.A. 3 - Player " + std::to_string(multi::slot()) : "N.O.V.A. 3";
+    SDL_SetStringProperty(props, SDL_PROP_WINDOW_CREATE_TITLE_STRING, title.c_str());
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_X_NUMBER, x);
+    SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_Y_NUMBER, y);
+    if (split) SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_BORDERLESS_BOOLEAN, true);
     SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, opt.width);
     SDL_SetNumberProperty(props, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, opt.height);
     SDL_SetBooleanProperty(props, SDL_PROP_WINDOW_CREATE_OPENGL_BOOLEAN, true);
@@ -600,6 +755,10 @@ void create_window(Options &opt) {
     g_window = SDL_CreateWindowWithProperties(props);
     SDL_DestroyProperties(props);
     if (!g_window) rt::fatal("SDL_CreateWindow: %s", SDL_GetError());
+    if (container) {
+        g_embedded = multi::embed(window_hwnd(g_window), container, x, y, opt.width, opt.height);
+        if (!g_embedded) rt::log("view: cannot join the split screen's window: a window of its own");
+    }
     if (mode == DisplayMode::Fullscreen) {
         SDL_DisplayMode m{};
         if (fullscreen_mode(display, opt.width, opt.height, cfg.refresh, m)) {
@@ -622,8 +781,13 @@ void create_window(Options &opt) {
     }
     if (g_video.fullscreen_sizes.empty()) g_video.fullscreen_sizes.push_back({g_video.desktop_w, g_video.desktop_h});
     if (mode != DisplayMode::Windowed) SDL_SetWindowFullscreen(g_window, true);
-    SDL_ShowWindow(g_window);
-    SDL_SyncWindow(g_window);
+    if (g_embedded) {
+        SDL_SetHint(SDL_HINT_WINDOW_ACTIVATE_WHEN_SHOWN, "0");  // a view: the shared window stays in front
+        SDL_ShowWindow(g_window);
+    } else {
+        SDL_ShowWindow(g_window);
+        SDL_SyncWindow(g_window);
+    }
     g_gl = SDL_GL_CreateContext(g_window);
     if (!g_gl) rt::fatal("GLES 2 context: %s", SDL_GetError());
     SDL_GL_MakeCurrent(g_window, nullptr);
@@ -638,7 +802,13 @@ void create_window(Options &opt) {
 // shells) keep their stderr.
 bool has_stderr() {
     HANDLE h = GetStdHandle(STD_ERROR_HANDLE);
-    return h && h != INVALID_HANDLE_VALUE && GetFileType(h) != FILE_TYPE_UNKNOWN;
+    if (!h || h == INVALID_HANDLE_VALUE) return false;
+    const DWORD type = GetFileType(h);
+    if (type == FILE_TYPE_UNKNOWN) return false;
+    // NUL is a character device like a console, but nothing reads it (the other game windows
+    // of a split start with NUL): log to a file then
+    DWORD console_mode;
+    return type != FILE_TYPE_CHAR || GetConsoleMode(h, &console_mode);
 }
 bool g_log_redirected;  // stderr was reopened by open_log (no stderr from the parent)
 void open_log(bool console) {
@@ -653,7 +823,12 @@ void open_log(bool console) {
     }
     // next to nova3.exe (the working directory becomes the game files' folder)
     const char *base = SDL_GetBasePath();
-    std::freopen((std::string(base ? base : "") + "nova3.log").c_str(), "w", stderr);
+    // a second game window (host/multi.cpp) logs to nova3-player2.log, ...
+    // (another copy holding this player's slot: its own log name too)
+    std::string name = multi::slot() > 1 ? "nova3-player" + std::to_string(multi::slot()) : "nova3";
+    if (multi::held_slot() != multi::slot()) name += "-slot" + std::to_string(multi::held_slot());
+    name += ".log";
+    std::freopen((std::string(base ? base : "") + name).c_str(), "w", stderr);
     std::setvbuf(stderr, nullptr, _IONBF, 0);
 }
 #else
@@ -825,8 +1000,11 @@ int main(int argc, char **argv) {
         opt.hd_pack = (std::filesystem::absolute(opt.lib, ec).parent_path() / "hd_textures.pak").string();
         launcher::set_hd_textures_found(std::filesystem::exists(opt.hd_pack, ec));
     }
+    multi::claim_slot(opt.player);  // player 1, 2, ... when several game windows are open
+    if (opt.player > 0) multi::set_player(opt.player);  // split screen: the number player 1 gave
     open_log(false);  // until the settings say otherwise
     rt::log("N.O.V.A. 3 for Windows, built %s %s", __DATE__, __TIME__);
+    if (multi::slot() > 1) rt::log("player %d (another game window is open)", multi::slot());
     // The guest's scratch tree (/sdcard, cache, /tmp, and the /proc and /sys files the runtime
     // generates at every start): nothing to keep, so the system temp folder.
     if (opt.data_dir.empty()) {
@@ -839,7 +1017,19 @@ int main(int argc, char **argv) {
     SDL_SetHint(SDL_HINT_WINDOWS_INTRESOURCE_ICON_SMALL, "1");
     {
         std::error_code ec;
-        if (opt.user_dir.empty()) opt.user_dir = user_folder();
+        if (opt.user_dir.empty()) {
+            opt.user_dir = user_folder();
+            // other game windows: their own saves and settings ("N.O.V.A. 3 (Player 2)"), starting
+            // from player 1's settings the first time
+            if (multi::slot() > 1) {
+                const std::filesystem::path first = opt.user_dir;
+                opt.user_dir += " (Player " + std::to_string(multi::slot()) + ")";
+                std::filesystem::create_directories(opt.user_dir, ec);
+                const auto ini = std::filesystem::path(opt.user_dir) / "nova3.ini";
+                if (!std::filesystem::exists(ini, ec) && std::filesystem::exists(first / "nova3.ini", ec))
+                    std::filesystem::copy_file(first / "nova3.ini", ini, ec);
+            }
+        }
         std::filesystem::create_directories(opt.user_dir, ec);
         if (ec) rt::fatal("cannot create the save folder %s: %s", opt.user_dir.c_str(), ec.message().c_str());
         if (opt.config.empty()) opt.config = (std::filesystem::path(opt.user_dir) / "nova3.ini").string();
@@ -850,6 +1040,9 @@ int main(int argc, char **argv) {
     if (opt.scripted && !opt.play) SDL_SetHint(SDL_HINT_WINDOW_ACTIVATE_WHEN_SHOWN, "0");
     // tests stay silent (NOVA3_REAL_AUDIO=1 keeps the real device, e.g. for timing checks at volume 0)
     if (((opt.scripted && !opt.play) || opt.headless) && !std::getenv("NOVA3_REAL_AUDIO")) SDL_SetHint(SDL_HINT_AUDIO_DRIVER, "dummy");
+    // controller events reach a window without focus too (several game windows, one controller
+    // each: host/input.cpp still ignores the pad unfocused when this is the only window)
+    SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
     if (!SDL_Init(SDL_INIT_AUDIO | (opt.headless ? SDL_INIT_EVENTS : SDL_INIT_VIDEO | SDL_INIT_GAMEPAD)))
         rt::fatal("SDL_Init: %s", SDL_GetError());
     if (!opt.launcher_shot.empty()) {
@@ -858,6 +1051,42 @@ int main(int argc, char **argv) {
     }
     // The launcher, unless -silent, headless or a scripted test run.
     if (!opt.silent && !opt.scripted && !opt.headless && !launcher::run(opt.cfg, opt.config)) rt::os::exit_process(0);
+    // [launcher] windows = N: split screen. This first window opens the shared window, then the
+    // other N - 1 players, each its own process with a view inside it.
+    if (opt.split == 0 && opt.cfg.windows > 1 && multi::slot() == 1 && !opt.scripted && !opt.headless) {
+        opt.split = opt.cfg.windows;
+        opt.split_display = opt.cfg.display;
+        opt.pads = opt.cfg.split_pads;
+        opt.names = opt.cfg.split_names;
+        opt.screens = opt.cfg.split_screens;
+        opt.split_fps = opt.cfg.split_fps;
+        opt.shared_audio = opt.cfg.split_audio;
+        opt.own_audio = opt.cfg.split_own_audio;
+        split_layout(opt);
+        if (opt.shared_count > 0) create_container(opt);  // everyone in a window of their own: none
+        open_other_windows(opt);
+    }
+    if (opt.split > 1) {
+        split_layout(opt);
+        // the players in the shared window at the same frame rate: the shared limit replaces
+        // their own; a player with a window of their own keeps their own ([video] max_fps)
+        if (opt.own_monitor >= 0) {
+            if (opt.own_fps >= 0) opt.cfg.max_fps = opt.own_fps;  // the launcher's Frame limit (player 1's)
+            rt::log("own window: on monitor %d, frame limit %d fps (its own, not the shared one)",
+                    opt.own_monitor + 1, opt.cfg.max_fps);
+        } else {
+            if (opt.split_fps > 0) opt.cfg.max_fps = opt.split_fps;
+            rt::log("split screen: frame limit %d fps for every player in the shared window", opt.cfg.max_fps);
+        }
+    }
+    if (opt.split > 1) input::set_split_pads(multi::split_list(opt.pads), multi::slot());
+    // split screen: players 2-8 play under the names set in player 1's launcher
+    if (opt.split > 1 && multi::slot() > 1) {
+        const std::vector<std::string> names = multi::split_list(opt.names);
+        if (size_t(multi::slot()) <= names.size() && !names[size_t(multi::slot() - 1)].empty())
+            opt.cfg.nickname = names[size_t(multi::slot() - 1)];
+        rt::log("name: %s", opt.cfg.nickname.empty() ? "(the game's default)" : opt.cfg.nickname.c_str());
+    }
 #ifdef _WIN32
     if (opt.cfg.console && g_log_redirected) open_log(true);  // switch the log from nova3.log to a console
 #endif
@@ -869,6 +1098,20 @@ int main(int argc, char **argv) {
     discord::start(opt.cfg, !opt.scripted || std::getenv("NOVA3_DISCORD_TEST"));
     input::set_scripted(opt.scripted && !opt.play);
     audio::set_volume(opt.cfg.volume / 100.0f);
+    // split screen: the shared window's audio output, or this own-screen player's
+    if (opt.split > 1) {
+        std::string device = opt.shared_audio;
+        if (opt.own_monitor >= 0) {
+            const std::vector<std::string> own = multi::split_list(opt.own_audio);
+            device = size_t(multi::slot()) <= own.size() ? own[size_t(multi::slot() - 1)] : "";
+        }
+        if (device == "mute") {
+            audio::set_volume(0);
+            rt::log("audio: muted");
+        } else {
+            audio::set_output_device(device);
+        }
+    }
     if (!opt.headless) {
         create_window(opt);
         input::set_window(g_window);
@@ -882,12 +1125,51 @@ int main(int argc, char **argv) {
     if (!rt::os::start_thread(game_thread, &boot, size_t(512) << 20)) rt::fatal("cannot start the game thread");
     // The main thread owns the window: handle events until the game thread ends or the
     // window is closed.
+    void *view = g_embedded ? window_hwnd(g_window) : nullptr;
+    if (view) input::set_view(view);
+    void *container = (void *)(uintptr_t)opt.container;
+    // split screen: one player may have the keyboard and mouse ([launcher] pads = kbm): then
+    // that view always keeps them and the others never take them; otherwise they belong to the
+    // view clicked last (player 1's at the start)
+    int kbm_player = 0;
+    if (opt.split > 1) {
+        const std::vector<std::string> pads = multi::split_list(opt.pads);
+        for (size_t i = 0; i < pads.size(); i++)
+            if (pads[i] == "kbm") kbm_player = int(i) + 1;
+    }
+    const bool my_kbm = kbm_player == multi::slot(), kbm_elsewhere = kbm_player && !my_kbm;
+    if (view && (kbm_player ? my_kbm : multi::slot() == 1)) multi::take_focus(view);
+    if (view && kbm_player) rt::log("keyboard and mouse: %s", my_kbm ? "this player's" : "another player's");
+    // a window of its own, with another player on the keyboard and mouse: only its controller
+    if (!view && kbm_elsewhere) input::set_external_focus(false);
     while (!boot.done) {
+        // the other players of a split close with the first one (and its window)
+        if (opt.split > 1 && multi::slot() > 1 &&
+            (!multi::slot_alive(1) || (opt.container && !multi::window_alive((void *)(uintptr_t)opt.container)))) {
+            rt::log("player 1's window closed: closing this one too");
+            rt::os::exit_process(0);
+        }
+        if (view) {
+            // the keyboard-and-mouse player takes the focus back whenever the shared window is
+            // active (after an alt-tab, or a click in another view)
+            if (my_kbm && multi::is_foreground(container) && !multi::has_focus(view)) multi::take_focus(view);
+            input::set_external_focus(!kbm_elsewhere && multi::has_focus(view));
+        }
         SDL_Event e;
         if (!SDL_WaitEventTimeout(&e, 100)) continue;
         do {
             if (e.type == SDL_EVENT_QUIT) rt::os::exit_process(0);
-            if (e.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED) note_window_size(e.window.data1, e.window.data2);
+            // the split screen's window: closing it ends every player
+            if (e.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED &&
+                ((g_container && e.window.windowID == SDL_GetWindowID(g_container)) ||
+                 e.window.windowID == SDL_GetWindowID(g_window)))
+                rt::os::exit_process(0);  // (an own window of player 2-8: only that player)
+            if (view && !kbm_elsewhere && e.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
+                multi::take_focus(view);
+                input::set_external_focus(true);
+            }
+            if (e.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED && e.window.windowID == SDL_GetWindowID(g_window))
+                note_window_size(e.window.data1, e.window.data2);
             input::handle_event(e);
         } while (SDL_PollEvent(&e));
     }

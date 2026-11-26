@@ -17,7 +17,7 @@ from elf import load
 from capstone import Cs, CS_ARCH_ARM, CS_MODE_ARM
 
 LOAD_BASE = 0x10000000
-FUNCS_JSON = 'E:/nova3/build/recomp/funcs.json'
+FUNCS_JSON = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'build', 'recomp', 'funcs.json')
 FILE_WINDOW_BITS = 19  # one generated .c file per 512 KiB of guest code
 
 

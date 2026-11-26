@@ -1,4 +1,5 @@
 #include "input.h"
+#include "multi.h"
 #include "offline.h"
 
 #include "jni.h"
@@ -49,6 +50,7 @@ std::atomic<bool> g_aiming{false};  // the weapon is aimed down the sights (hook
 bool g_dpad_buttons;  // the arrow keys and the D-pad press a console's buttons (set_dpad_buttons)
 std::atomic<bool> g_last_pad{false};  // the gamepad was used after the keyboard and mouse
 std::atomic<bool> g_focused{true};
+bool g_external_focus = false;  // split screen: the focus comes from set_external_focus
 
 // Held inputs, written by the main thread (and scripted holds), read by the game thread
 std::atomic<bool> g_keys[SDL_SCANCODE_COUNT], g_script_keys[SDL_SCANCODE_COUNT];
@@ -158,8 +160,26 @@ void release_all() {
 #ifndef NOVA3_CONSOLE
 // Main thread (SDL_RunOnMainThread): relative mouse while playing; text input while a
 // text field is active.
+// Split screen: this player's view (a child window: SDL's relative mode never engages there,
+// so mouse look locks the cursor in the view itself, multi::lock_cursor).
+void *g_view = nullptr;
+bool g_cursor_locked = false;
 void apply_mouse_mode(void *) {
-    if (g_window) SDL_SetWindowRelativeMouseMode(g_window, g_gameplay && !g_scripted);
+    if (!g_window) return;
+    if (!g_view) {
+        SDL_SetWindowRelativeMouseMode(g_window, g_gameplay && !g_scripted);
+        return;
+    }
+    const bool lock = g_gameplay && !g_scripted && g_focused;
+    if (lock == g_cursor_locked) return;
+    g_cursor_locked = lock;
+    if (lock) {
+        SDL_HideCursor();
+        multi::lock_cursor(g_view);
+    } else {
+        multi::unlock_cursor();
+        SDL_ShowCursor();
+    }
 }
 void apply_text_input(void *) {
     if (!g_window) return;
@@ -593,36 +613,111 @@ void set_screen(int width, int height) {
     g_screen_h = height;
 }
 #else
-void set_window(SDL_Window *window) { g_window = window; }
+// Several windows (host/multi.cpp): each claims a controller no other window has, by its
+// device path, so every window plays with its own gamepad. [gamepad] controller = N asks for
+// the Nth connected controller instead of the first free one.
+std::string pad_key(SDL_JoystickID id) {
+    const char *path = SDL_GetGamepadPathForID(id);
+    if (path && *path) return path;
+    char guid[64];
+    SDL_GUIDToString(SDL_GetGamepadGUIDForID(id), guid, sizeof guid);
+    return std::string(guid) + "#" + std::to_string(SDL_GetGamepadPlayerIndexForID(id));
+}
+bool try_open_pad(SDL_JoystickID id) {
+    if (!multi::claim_pad(pad_key(id))) return false;
+    g_gamepad = SDL_OpenGamepad(id);
+    if (!g_gamepad) {
+        multi::release_pad();
+        return false;
+    }
+    SDL_SetGamepadPlayerIndex(g_gamepad, multi::slot() - 1);  // player lights (DualSense, Switch, Xbox ring)
+    rt::log("gamepad connected: %s (player %d, %s)", SDL_GetGamepadName(g_gamepad), multi::slot(), pad_key(id).c_str());
+    return true;
+}
+// Split screen ([launcher] pads): this player's own controller, and the ones other players
+// have, which "Auto" leaves alone.
+std::string g_my_pad;
+std::vector<std::string> g_others_pads;
+// Main thread: open a free controller when this window has none.
+void open_free_pad(void * = nullptr) {
+    if (g_gamepad || !g_cfg.gamepad) return;
+    int n = 0;
+    SDL_JoystickID *pads = SDL_GetGamepads(&n);
+    if (!g_my_pad.empty()) {
+        for (int i = 0; i < n && !g_gamepad; i++)
+            if (pad_key(pads[i]) == g_my_pad) try_open_pad(pads[i]);  // until it is connected: none
+    } else if (!g_others_pads.empty()) {
+        for (int i = 0; i < n && !g_gamepad; i++)
+            if (std::find(g_others_pads.begin(), g_others_pads.end(), pad_key(pads[i])) == g_others_pads.end())
+                try_open_pad(pads[i]);
+    } else if (g_cfg.controller > 0) {
+        if (g_cfg.controller <= n) try_open_pad(pads[g_cfg.controller - 1]);
+    } else {
+        for (int i = 0; i < n && !g_gamepad; i++) try_open_pad(pads[i]);
+    }
+    SDL_free(pads);
+}
+
+void set_split_pads(const std::vector<std::string> &pads, int player) {
+    g_my_pad.clear();
+    g_others_pads.clear();
+    for (size_t i = 0; i < pads.size(); i++) {
+        if (int(i) + 1 == player) g_my_pad = pads[i];
+        else if (!pads[i].empty()) g_others_pads.push_back(pads[i]);
+    }
+}
+
+void set_external_focus(bool focused) {
+    g_external_focus = true;
+    const bool was = g_focused.exchange(focused);
+    if (was && !focused) release_all();
+    if (was != focused) apply_mouse_mode(nullptr);  // (main thread) lock or free the cursor
+}
+
+void set_view(void *view) {
+    g_view = view;
+    apply_mouse_mode(nullptr);
+}
+
+void set_window(SDL_Window *window) {
+    g_window = window;
+    // SDL sends SDL_EVENT_GAMEPAD_ADDED for already-connected controllers only once, at start;
+    // the launcher's event loop consumes it, so open a controller that is already there now.
+    open_free_pad();
+}
 
 void handle_event(const SDL_Event &e) {
     switch (e.type) {
     case SDL_EVENT_WINDOW_FOCUS_GAINED:
-        g_focused = true;
+        if (!g_external_focus) g_focused = true;  // split screen: set_external_focus decides
         return;
     case SDL_EVENT_WINDOW_FOCUS_LOST:
+        if (g_external_focus) return;
         g_focused = false;
         release_all();
         return;
     case SDL_EVENT_GAMEPAD_ADDED:
-        if (!g_gamepad && g_cfg.gamepad) {
-            g_gamepad = SDL_OpenGamepad(e.gdevice.which);
-            if (g_gamepad) rt::log("gamepad connected: %s", SDL_GetGamepadName(g_gamepad));
-        }
+        open_free_pad();
         return;
     case SDL_EVENT_GAMEPAD_REMOVED:
         if (g_gamepad && SDL_GetGamepadID(g_gamepad) == e.gdevice.which) {
             rt::log("gamepad disconnected");
             SDL_CloseGamepad(g_gamepad);
             g_gamepad = nullptr;
+            multi::release_pad();
             g_pad_raw = 0;
             for (auto &a : g_axis) a = 0;
+            open_free_pad();  // another free controller, if there is one
         }
         return;
     default:
         break;
     }
     if (g_scripted) return;  // tests: real input is ignored
+    // split screen: a click reaches whichever view is under the cursor, so the keyboard and
+    // mouse count only in the view that has the focus (set_external_focus)
+    if (g_external_focus && !g_focused && e.type >= SDL_EVENT_KEY_DOWN && e.type < SDL_EVENT_JOYSTICK_AXIS_MOTION)
+        return;
 
     switch (e.type) {
     case SDL_EVENT_KEY_DOWN:
@@ -677,7 +772,15 @@ void handle_event(const SDL_Event &e) {
         return;
     }
     case SDL_EVENT_MOUSE_MOTION:
-        if (g_gameplay) {
+        if (g_gameplay && g_view) {
+            // split screen: the cursor's distance from the view's center, then back there
+            if (g_cursor_locked) {
+                int dx, dy;
+                multi::recenter_cursor(g_view, dx, dy);
+                g_mouse_dx += float(dx);
+                g_mouse_dy += float(dy);
+            }
+        } else if (g_gameplay) {
             if (SDL_GetWindowRelativeMouseMode(g_window)) {
                 g_mouse_dx += e.motion.xrel;
                 g_mouse_dy += e.motion.yrel;
@@ -750,8 +853,23 @@ void update() {
 #elif defined(__GAMECUBE__)
     poll_gc();
 #endif
-    // like the keyboard: the pad only counts while the window has focus
-    bool use = g_cfg.gamepad && g_focused && !g_scripted;
+    // like the keyboard: the pad only counts while the window has focus, unless other game
+    // windows are open: then each window plays with its own controller, focused or not.
+#ifndef NOVA3_CONSOLE
+    const bool shared_pc = multi::others_running();
+    if (!g_gamepad && g_cfg.gamepad && !g_scripted) {
+        // a controller another window let go of (closed, or unplugged and back): every 2 s
+        static int64_t next_try = 0;
+        const int64_t now = rt::os::monotonic_ns();
+        if (now >= next_try) {
+            next_try = now + 2000000000;
+            SDL_RunOnMainThread(open_free_pad, nullptr, false);
+        }
+    }
+#else
+    const bool shared_pc = false;
+#endif
+    bool use = g_cfg.gamepad && (g_focused || shared_pc) && !g_scripted;
     uint32_t buttons = (use ? g_pad_raw.load() : 0) | g_script_pad.load();
     stick(use ? g_axis[0].load() : 0, use ? g_axis[1].load() : 0, g_pad.lx, g_pad.ly);
     stick(use ? g_axis[2].load() : 0, use ? g_axis[3].load() : 0, g_pad.rx, g_pad.ry);
