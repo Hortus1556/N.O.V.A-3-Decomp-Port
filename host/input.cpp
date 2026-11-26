@@ -593,7 +593,18 @@ void set_screen(int width, int height) {
     g_screen_h = height;
 }
 #else
-void set_window(SDL_Window *window) { g_window = window; }
+void set_window(SDL_Window *window) {
+    g_window = window;
+    // SDL sends SDL_EVENT_GAMEPAD_ADDED for already-connected controllers only once, at start;
+    // the launcher's event loop consumes it, so open a controller that is already there now.
+    if (!g_gamepad && g_cfg.gamepad) {
+        int n = 0;
+        SDL_JoystickID *pads = SDL_GetGamepads(&n);
+        for (int i = 0; i < n && !g_gamepad; i++) g_gamepad = SDL_OpenGamepad(pads[i]);
+        SDL_free(pads);
+        if (g_gamepad) rt::log("gamepad connected: %s", SDL_GetGamepadName(g_gamepad));
+    }
+}
 
 void handle_event(const SDL_Event &e) {
     switch (e.type) {
