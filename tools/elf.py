@@ -1,7 +1,8 @@
 """Minimal ELF32 (ARM) reader for libGloftNAHM.so."""
 import struct, zipfile
 
-APK = 'E:/nova3/NOVA-3-v1-0-1d.apk'
+import os
+APK = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'NOVA-3-v1-0-1d.apk')
 LIB = 'lib/armeabi-v7a/libGloftNAHM.so'
 
 
