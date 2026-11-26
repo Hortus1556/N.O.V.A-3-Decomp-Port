@@ -237,14 +237,20 @@ bool run(Settings &cfg, const std::string &config_path) {
     if (scale <= 0) scale = 1;
     SDL_Window *window = nullptr;
     SDL_Renderer *renderer = nullptr;
-    SDL_WindowFlags flags = SDL_WINDOW_HIGH_PIXEL_DENSITY | (g_shot ? SDL_WINDOW_NOT_FOCUSABLE : 0);
-    int win_h = int(860 * scale);  // the settings scroll, so small screens just get a shorter window
+    // resizable (the settings scroll and the rows stretch); wide enough for the split-screen
+    // player rows (name, controller, Assign; own screen, monitor, audio)
+    SDL_WindowFlags flags = SDL_WINDOW_HIGH_PIXEL_DENSITY | SDL_WINDOW_RESIZABLE | (g_shot ? SDL_WINDOW_NOT_FOCUSABLE : 0);
+    int win_w = int(820 * scale), win_h = int(900 * scale);  // small screens get a smaller window
     SDL_Rect usable;
-    if (SDL_GetDisplayUsableBounds(SDL_GetPrimaryDisplay(), &usable)) win_h = std::min(win_h, usable.h * 9 / 10);
-    if (!SDL_CreateWindowAndRenderer("N.O.V.A. 3", int(640 * scale), win_h, flags, &window, &renderer)) {
+    if (SDL_GetDisplayUsableBounds(SDL_GetPrimaryDisplay(), &usable)) {
+        win_w = std::min(win_w, usable.w * 9 / 10);
+        win_h = std::min(win_h, usable.h * 9 / 10);
+    }
+    if (!SDL_CreateWindowAndRenderer("N.O.V.A. 3", win_w, win_h, flags, &window, &renderer)) {
         rt::log("launcher: %s; starting the game directly", SDL_GetError());
         return true;
     }
+    SDL_SetWindowMinimumSize(window, int(560 * scale), int(420 * scale));
     SDL_SetRenderVSync(renderer, 1);
 
     IMGUI_CHECKVERSION();
