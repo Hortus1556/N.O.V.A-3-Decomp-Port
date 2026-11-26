@@ -134,6 +134,67 @@ chooses another folder, `--config FILE` another settings file.
   strings) accept a Saved Games folder under a user name with accented letters. Tested with a
   folder named `tëst ü`.
 
+## Several game windows
+
+Each `nova3.exe` started while another is open becomes the next player (`host/multi.cpp`:
+one named mutex per player slot, freed by the system when the window closes):
+
+- **Its own controller**: a window claims a controller no other window has (by its device
+  path), so every window plays with a different gamepad; the controller's player lights
+  show the number. While more than one window is open, each reads its controller even
+  without focus (the keyboard and mouse still go to the focused window only). A window
+  without a controller picks up one that another window let go of (closed or unplugged)
+  within two seconds. `[gamepad] controller = auto` (the first free one) or `1`-`8` (the Nth
+  connected), also in the launcher under Gamepad.
+- **Split screen**: the launcher's *Players* (`[launcher] windows = N`, 1-8). Play opens one
+  window (player 1's) and the other N - 1 players (`nova3.exe -silent --split N:monitor:hwnd
+  --pads ...`), each its own process whose game window becomes a child window of it: one
+  window, one taskbar button. Windowed: a window at the resolution; borderless or
+  fullscreen: the whole monitor, taskbar included. Each view keeps a shape between 4:3 and
+  16:9 (taller views cut off the menus' sides), centered with black bars, in the grid that
+  gives the views the most area (2 players side by side, 3-4 as 2 x 2, 8 as 3 x 3 on 16:9;
+  a short last row is centered). The keyboard and mouse belong to the view clicked last.
+  Closing the window ends every player.
+- **Each player's controller**: one row per player in the launcher: *Auto* (the first
+  controller no player has) or a connected one; *Assign*, then a button on the controller,
+  picks it by hand, and the controllers' player lights show the assignment
+  (`[launcher] pads`, device paths). A player whose controller is not connected waits for it.
+- **Own screen**: a player row's *Own screen* (and its monitor) gives that player a window of
+  their own instead of a view: the display mode and resolution apply to it as to a single
+  window, on the chosen monitor (`[launcher] screens`: per player, empty or the monitor
+  number; `--screens`). The shared window then splits only among the others; with nobody
+  left in it there is none. Closing an own window ends that player (player 1's: everyone).
+- **Keyboard and mouse**: one player may take *Keyboard & mouse* instead of a controller
+  (`kbm` in `pads`): that view always keeps them (it takes the focus back whenever the window
+  is active) and no other view takes them. Without one, they belong to the view clicked last.
+  Either way a view without the focus ignores keys and clicks.
+  Mouse look in a view: SDL's relative mouse mode never engages in a child window, so while
+  the view has the focus in gameplay the cursor is hidden, clipped to the view and put back
+  at its center after every move, the distance travelled being the look movement
+  (`multi::recenter_cursor`; Windows' pointer speed and acceleration apply).
+- **Audio output**: *Audio (shared)* (`[launcher] shared_audio`) is where the shared
+  window's players are heard; each own-screen player has an *Audio output* of their own in
+  the Players section (`[launcher] own_audio`). Default output, Muted, or a playback device
+  by name (SDL's device IDs differ between processes; a device not connected falls back to
+  the default). Passed as `--shared-audio` / `--own-audio`; `audio::set_output_device`.
+- **Launcher**: resizable (at least 560 x 420); the players have a Players section of their
+  own: name, controller and Assign on one line, Own screen with its monitor and audio output
+  below.
+- **Same frame rate**: *Frame limit (shared)* (`[launcher] split_fps`, 60 or 120, passed as
+  `--fps`) replaces the own `max_fps` of every player in the shared window (a player on their
+  own screen keeps their own `max_fps`): each player is a full copy of the game, and
+  without it they run at whatever their share of the PC allows (240 next to 118 measured).
+- **Names**: each player row has a name, shown in local matches: player 1's is
+  `[multiplayer] nickname`, the others' `[launcher] names` (passed as `--names`).
+- **FPS counter**: `[video] fps_counter` (launcher: Display), on by default: the frame rate
+  over the last half second in the top-right corner of every view (`host/fps_overlay.cpp`,
+  drawn before the swap; every GL state it changes is saved and restored, since the runtime
+  skips the game's calls that match its cached state).
+- **Its own files**: player 2 and up keep saves and settings in
+  `Saved Games\N.O.V.A. 3 (Player N)` (settings copied from player 1 the first time), log
+  to `nova3-playerN.log`, and show "Player N" in the window title. `--user` still picks the
+  folder outright.
+
 ## `nova3.ini`
 
 Written with defaults when missing, and again when the game's Controls page changes a setting
